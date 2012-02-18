@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.2
-Release: 18%{?dist}
+Release: 19%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -648,6 +648,12 @@ Obsoletes: python-hashlib < 20081120
 Provides: python-hashlib = 20081120
 Obsoletes: python-uuid < 1.31
 Provides: python-uuid = 1.31
+
+# python-sqlite2-2.3.5-5.fc18 was retired.  Obsolete the old package here
+# so it gets uninstalled on updates
+%if 0%{?fedora} >= 17
+Obsoletes: python-sqlite2 <= 2.3.5-6
+%endif
 
 # python-argparse is part of python as of version 2.7
 # drop this Provides in F17
@@ -1735,6 +1741,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri Feb 17 2012 Toshio Kuratomi <toshio@fedoraproject.org> - 2.7.2-19
+- Obsolete python-sqlite2
+
 * Thu Nov 24 2011 Ville Skyttä <ville.skytta@iki.fi> - 2.7.2-18
 - Build with $RPM_LD_FLAGS (#756862).
 - Use xz-compressed source tarball.
