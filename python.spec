@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.2
-Release: 19%{?dist}
+Release: 20%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -601,6 +601,11 @@ Patch147: 00147-add-debug-malloc-stats.patch
 # Taken from upstream http://bugs.python.org/issue13007 (rhbz#742242)
 Patch148: 00148-gdbm-1.9-magic-values.patch
 
+# Fix deadlock in fork:
+# https://bugzilla.redhat.com/show_bug.cgi?id=787712
+# http://bugs.python.org/issue13817
+Patch151: python-3.2.2-fork-deadlock.patch
+
 # python3.spec's
 #   Patch149: 00149-backport-issue11254-pycache-bytecompilation-fix.patch
 # is not relevant for Python 2
@@ -913,6 +918,7 @@ done
 %patch147 -p1
 %patch148 -p1
 # 00149: not for python 2
+%patch151 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1741,6 +1747,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Sat Feb 25 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.7.2-20
+- fix deadlock issue (#787712)
+
 * Fri Feb 17 2012 Toshio Kuratomi <toshio@fedoraproject.org> - 2.7.2-19
 - Obsolete python-sqlite2
 
