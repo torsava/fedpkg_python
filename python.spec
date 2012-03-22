@@ -601,14 +601,18 @@ Patch147: 00147-add-debug-malloc-stats.patch
 # Taken from upstream http://bugs.python.org/issue13007 (rhbz#742242)
 Patch148: 00148-gdbm-1.9-magic-values.patch
 
-# Fix deadlock in fork:
-# https://bugzilla.redhat.com/show_bug.cgi?id=787712
-# http://bugs.python.org/issue13817
-Patch151: python-3.2.2-fork-deadlock.patch
-
 # python3.spec's
 #   Patch149: 00149-backport-issue11254-pycache-bytecompilation-fix.patch
 # is not relevant for Python 2
+
+# python3.spec has:
+#  Patch150: 00150-disable-rAssertAlmostEqual-cmath-on-ppc.patch
+# as a workaround for a glibc bug on PPC (bz #750811)
+
+# Fix deadlock in fork:
+# https://bugzilla.redhat.com/show_bug.cgi?id=787712
+# http://bugs.python.org/issue13817
+Patch151: 00151-fork-deadlock.patch
 
 # (New patches go here ^^^)
 #
@@ -918,6 +922,7 @@ done
 %patch147 -p1
 %patch148 -p1
 # 00149: not for python 2
+# 00150: not for python 2
 %patch151 -p1
 
 
