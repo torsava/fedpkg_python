@@ -107,8 +107,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.2
-Release: 20%{?dist}
+Version: 2.7.3
+Release: 1%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -308,11 +308,8 @@ Patch7: python-2.5.1-sqlite-encoding.patch
 # (rhbz:307221)
 Patch10: python-2.7rc1-binutils-no-dep.patch
 
-# FIXME: appears to relate to:
-#* Tue Oct 30 2007 James Antill <jantill@redhat.com> - 2.5.1-15
-#- Do codec lowercase in C Locale.
-#- Resolves: 207134 191096
-Patch11: python-2.7rc1-codec-ascii-tolower.patch
+# Upstream as of Python 2.7.3:
+#  Patch11: python-2.7rc1-codec-ascii-tolower.patch
 
 # Add various constants to the socketmodule (rhbz#436560):
 # TODO: these patches were added in 2.5.1-22 and 2.5.1-24 but appear not to
@@ -358,7 +355,7 @@ Patch101: python-2.3.4-lib64-regex.patch
 # and add the /usr/lib64/pythonMAJOR.MINOR/site-packages to sitedirs, in front of
 # /usr/lib/pythonMAJOR.MINOR/site-packages
 # Not upstream
-Patch102: python-2.7.1-lib64.patch
+Patch102: python-2.7.3-lib64.patch
 
 # Python 2.7 split out much of the path-handling from distutils/sysconfig.py to
 # a new sysconfig.py (in r77704).
@@ -435,7 +432,7 @@ Patch111: 00111-no-static-lib.patch
 #
 #  See also patch 130 below
 #
-Patch112: python-2.7rc1-debug-build.patch
+Patch112: python-2.7.3-debug-build.patch
 
 
 # Add configure-time support for the COUNT_ALLOCS and CALL_PROFILE options
@@ -448,9 +445,8 @@ Patch113: 00113-more-configuration-flags.patch
 # (rhbz:553020); partially upstream as http://bugs.python.org/issue7647
 Patch114: 00114-statvfs-f_flag-constants.patch
 
-# Make "pydoc -k" more robust in the face of broken modules
-# (rhbz:461419; patch sent upstream as http://bugs.python.org/issue7425 )
-Patch115: make-pydoc-more-robust-001.patch
+# Upstream as of Python 2.7.3:
+#  Patch115: make-pydoc-more-robust-001.patch
 
 # Upstream r79310 removed the "Modules" directory from sys.path when Python is
 # running from the build directory on POSIX to fix a unit test (issue #8205).
@@ -568,12 +564,8 @@ Patch143: 00143-tsc-on-ppc.patch
 # (Optionally) disable the gdbm module:
 Patch144: 00144-no-gdbm.patch
 
-# Force MACHDEP and thus sys.platform to be "linux2" even on systems with
-# linux 3, given that the distinction is meaningless (especially in Koji, where
-# "uname" reflects the kernel running _outside_ the mock-provided chroot).
-#
-# Backport of part of fix for http://bugs.python.org/issue12326
-Patch145: 00145-force-sys-platform-to-be-linux2.patch
+# Upstream as of Python 2.7.3:
+#  Patch145: 00145-force-sys-platform-to-be-linux2.patch
 
 # Support OpenSSL FIPS mode (e.g. when OPENSSL_FORCE_FIPS_MODE=1 is set)
 # - handle failures from OpenSSL (e.g. on attempts to use MD5 in a
@@ -597,9 +589,8 @@ Patch146: 00146-hashlib-fips.patch
 #  Not yet sent upstream
 Patch147: 00147-add-debug-malloc-stats.patch
 
-# Cherrypick fix for dbm version detection to cope with gdbm-1.9's magic values
-# Taken from upstream http://bugs.python.org/issue13007 (rhbz#742242)
-Patch148: 00148-gdbm-1.9-magic-values.patch
+# Upstream as of Python 2.7.3:
+#  Patch148: 00148-gdbm-1.9-magic-values.patch
 
 # python3.spec's
 #   Patch149: 00149-backport-issue11254-pycache-bytecompilation-fix.patch
@@ -609,10 +600,16 @@ Patch148: 00148-gdbm-1.9-magic-values.patch
 #  Patch150: 00150-disable-rAssertAlmostEqual-cmath-on-ppc.patch
 # as a workaround for a glibc bug on PPC (bz #750811)
 
-# Fix deadlock in fork:
-# https://bugzilla.redhat.com/show_bug.cgi?id=787712
-# http://bugs.python.org/issue13817
-Patch151: 00151-fork-deadlock.patch
+# Upstream as of Python 2.7.3:
+#  Patch151: 00151-fork-deadlock.patch
+
+# python3.spec has:
+#  Patch152: 00152-fix-test-gdb-regex.patch
+
+# Strip out lines of the form "warning: Unable to open ..." from gdb's stderr
+# when running test_gdb.py; also cope with change to gdb in F17 onwards in
+# which values are printed as "v@entry" rather than just "v":
+Patch153: 00153-fix-test_gdb-noise.patch
 
 # (New patches go here ^^^)
 #
@@ -865,7 +862,7 @@ done
 %endif
 
 %patch10 -p1 -b .binutils-no-dep
-%patch11 -p1 -b .ascii-tolower
+# patch11: upstream as of Python 2.7.3
 %patch13 -p1 -b .socketmodule
 %patch14 -p1 -b .socketmodule2
 %patch16 -p1 -b .rpath
@@ -884,12 +881,12 @@ done
 
 %patch114 -p1 -b .statvfs-f-flag-constants
 
-%patch115 -p0
+# patch115: upstream as of Python 2.7.3
 
 %patch121 -p0 -R
 %patch125 -p1 -b .less-verbose-COUNT_ALLOCS
 %patch126 -p0 -b .fix-dbm_contains-on-64bit-bigendian
-%patch127 -p0 -b .fix-test_structmember-on-64bit-bigendian
+%patch127 -p1 -b .fix-test_structmember-on-64bit-bigendian
 %patch128 -p1
 
 %patch130 -p1
@@ -917,13 +914,15 @@ done
 %if !%{with_gdbm}
 %patch144 -p1
 %endif
-%patch145 -p1 -b .linux2
+# 00145: upstream as of Python 2.7.3
 %patch146 -p1
 %patch147 -p1
-%patch148 -p1
+# 00148: upstream as of Python 2.7.3
 # 00149: not for python 2
 # 00150: not for python 2
-%patch151 -p1
+# 00151: upstream as of Python 2.7.3
+# 00152: not for python 2
+%patch153 -p0
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1170,7 +1169,7 @@ cp -a save_bits_of_test/* %{buildroot}/%{pylibdir}/test
 fi
 
 %if %{main_python}
-ln -s python %{buildroot}%{_bindir}/python2
+ln -s python2.7-debug-config %{buildroot}%{_bindir}/python-debug-config
 %if 0%{?with_debug_build}
 ln -s python-debug %{buildroot}%{_bindir}/python2-debug
 %endif # with_debug_build
@@ -1565,6 +1564,7 @@ rm -fr %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/pkgconfig/python-%{pybasever}.pc
 %{_libdir}/pkgconfig/python.pc
+%{_libdir}/pkgconfig/python2.pc
 %{pylibdir}/config/*
 %exclude %{pylibdir}/config/Makefile
 %{pylibdir}/distutils/command/wininst-*.exe
@@ -1752,6 +1752,14 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Apr 11 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-1
+- 2.7.3: refresh patch 102 (lib64); drop upstream patches 11 (ascii-to-lower),
+115 (pydoc robustness), 145 (linux2), 148 (gdbm magic values), 151 (deadlock
+in fork); refresh patch 112 (debug build); revise patch 127
+(test_structmember); fix test_gdb (patch 153); refresh patch 137 (distutils
+tests); add python2.pc to python-devel; regenerate the autotool intermediates
+patch (patch 300)
+
 * Sat Feb 25 2012 Thomas Spura <tomspur@fedoraproject.org> - 2.7.2-20
 - fix deadlock issue (#787712)
 

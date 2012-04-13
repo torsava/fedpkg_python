@@ -1,7 +1,7 @@
-diff -up Python-2.7rc2/configure.in.debug-build Python-2.7rc2/configure.in
---- Python-2.7rc2/configure.in.debug-build	2010-06-24 12:59:28.166319997 -0400
-+++ Python-2.7rc2/configure.in	2010-06-24 12:59:28.179376823 -0400
-@@ -641,7 +641,7 @@ AC_SUBST(LIBRARY)
+diff -up Python-2.7.3/configure.in.debug-build Python-2.7.3/configure.in
+--- Python-2.7.3/configure.in.debug-build	2012-04-13 00:13:53.923498660 -0400
++++ Python-2.7.3/configure.in	2012-04-13 00:13:53.929498585 -0400
+@@ -635,7 +635,7 @@ AC_SUBST(LIBRARY)
  AC_MSG_CHECKING(LIBRARY)
  if test -z "$LIBRARY"
  then
@@ -10,10 +10,10 @@ diff -up Python-2.7rc2/configure.in.debug-build Python-2.7rc2/configure.in
  fi
  AC_MSG_RESULT($LIBRARY)
  
-@@ -786,8 +786,8 @@ if test $enable_shared = "yes"; then
+@@ -780,8 +780,8 @@ if test $enable_shared = "yes"; then
  	  INSTSONAME="$LDLIBRARY".$SOVERSION
            ;;
-     Linux*|GNU*|NetBSD*|FreeBSD*|DragonFly*)
+     Linux*|GNU*|NetBSD*|FreeBSD*|DragonFly*|OpenBSD*)
 -	  LDLIBRARY='libpython$(VERSION).so'
 -	  BLDLIBRARY='-L. -lpython$(VERSION)'
 +	  LDLIBRARY='libpython$(VERSION)$(DEBUG_EXT).so'
@@ -21,7 +21,7 @@ diff -up Python-2.7rc2/configure.in.debug-build Python-2.7rc2/configure.in
  	  RUNSHARED=LD_LIBRARY_PATH=`pwd`:${LD_LIBRARY_PATH}
  	  case $ac_sys_system in
  	      FreeBSD*)
-@@ -892,6 +892,14 @@ else AC_MSG_RESULT(no); Py_DEBUG='false'
+@@ -905,6 +905,14 @@ else AC_MSG_RESULT(no); Py_DEBUG='false'
  fi],
  [AC_MSG_RESULT(no)])
  
@@ -36,10 +36,10 @@ diff -up Python-2.7rc2/configure.in.debug-build Python-2.7rc2/configure.in
  # XXX Shouldn't the code above that fiddles with BASECFLAGS and OPT be
  # merged with this chunk of code?
  
-diff -up Python-2.7rc2/Lib/distutils/command/build_ext.py.debug-build Python-2.7rc2/Lib/distutils/command/build_ext.py
---- Python-2.7rc2/Lib/distutils/command/build_ext.py.debug-build	2010-04-01 14:17:09.000000000 -0400
-+++ Python-2.7rc2/Lib/distutils/command/build_ext.py	2010-06-24 12:59:28.179376823 -0400
-@@ -677,7 +677,10 @@ class build_ext (Command):
+diff -up Python-2.7.3/Lib/distutils/command/build_ext.py.debug-build Python-2.7.3/Lib/distutils/command/build_ext.py
+--- Python-2.7.3/Lib/distutils/command/build_ext.py.debug-build	2012-04-09 19:07:29.000000000 -0400
++++ Python-2.7.3/Lib/distutils/command/build_ext.py	2012-04-13 00:13:53.930498573 -0400
+@@ -676,7 +676,10 @@ class build_ext (Command):
          so_ext = get_config_var('SO')
          if os.name == 'nt' and self.debug:
              return os.path.join(*ext_path) + '_d' + so_ext
@@ -51,7 +51,7 @@ diff -up Python-2.7rc2/Lib/distutils/command/build_ext.py.debug-build Python-2.7
  
      def get_export_symbols (self, ext):
          """Return the list of symbols that a shared extension has to
-@@ -760,6 +763,8 @@ class build_ext (Command):
+@@ -761,6 +764,8 @@ class build_ext (Command):
                  template = "python%d.%d"
                  pythonlib = (template %
                               (sys.hexversion >> 24, (sys.hexversion >> 16) & 0xff))
@@ -60,9 +60,9 @@ diff -up Python-2.7rc2/Lib/distutils/command/build_ext.py.debug-build Python-2.7
                  return ext.libraries + [pythonlib]
              else:
                  return ext.libraries
-diff -up Python-2.7rc2/Lib/distutils/sysconfig.py.debug-build Python-2.7rc2/Lib/distutils/sysconfig.py
---- Python-2.7rc2/Lib/distutils/sysconfig.py.debug-build	2010-06-24 12:59:28.145319202 -0400
-+++ Python-2.7rc2/Lib/distutils/sysconfig.py	2010-06-24 12:59:28.180381519 -0400
+diff -up Python-2.7.3/Lib/distutils/sysconfig.py.debug-build Python-2.7.3/Lib/distutils/sysconfig.py
+--- Python-2.7.3/Lib/distutils/sysconfig.py.debug-build	2012-04-13 00:13:53.899498961 -0400
++++ Python-2.7.3/Lib/distutils/sysconfig.py	2012-04-13 00:13:53.930498573 -0400
 @@ -85,7 +85,8 @@ def get_python_inc(plat_specific=0, pref
                  # Include is located in the srcdir
                  inc_dir = os.path.join(srcdir, "Include")
@@ -73,7 +73,7 @@ diff -up Python-2.7rc2/Lib/distutils/sysconfig.py.debug-build Python-2.7rc2/Lib/
      elif os.name == "nt":
          return os.path.join(prefix, "include")
      elif os.name == "os2":
-@@ -211,7 +212,7 @@ def get_makefile_filename():
+@@ -250,7 +251,7 @@ def get_makefile_filename():
      if python_build:
          return os.path.join(os.path.dirname(sys.executable), "Makefile")
      lib_dir = get_python_lib(plat_specific=1, standard_lib=1)
@@ -82,10 +82,24 @@ diff -up Python-2.7rc2/Lib/distutils/sysconfig.py.debug-build Python-2.7rc2/Lib/
  
  
  def parse_config_h(fp, g=None):
-diff -up Python-2.7rc2/Makefile.pre.in.debug-build Python-2.7rc2/Makefile.pre.in
---- Python-2.7rc2/Makefile.pre.in.debug-build	2010-06-24 12:59:28.175377249 -0400
-+++ Python-2.7rc2/Makefile.pre.in	2010-06-24 13:01:24.559945307 -0400
-@@ -99,8 +99,8 @@ SCRIPTDIR=	$(prefix)/lib64
+diff -up Python-2.7.3/Lib/distutils/tests/test_install.py.debug-build Python-2.7.3/Lib/distutils/tests/test_install.py
+--- Python-2.7.3/Lib/distutils/tests/test_install.py.debug-build	2012-04-13 00:14:36.177970408 -0400
++++ Python-2.7.3/Lib/distutils/tests/test_install.py	2012-04-13 00:15:20.675414113 -0400
+@@ -20,8 +20,9 @@ from distutils.tests import support
+ 
+ 
+ def _make_ext_name(modname):
+-    if os.name == 'nt' and sys.executable.endswith('_d.exe'):
++    if sys.pydebug:
+         modname += '_d'
++    
+     return modname + sysconfig.get_config_var('SO')
+ 
+ 
+diff -up Python-2.7.3/Makefile.pre.in.debug-build Python-2.7.3/Makefile.pre.in
+--- Python-2.7.3/Makefile.pre.in.debug-build	2012-04-13 00:13:53.927498611 -0400
++++ Python-2.7.3/Makefile.pre.in	2012-04-13 00:13:53.931498561 -0400
+@@ -102,8 +102,8 @@ SCRIPTDIR=	$(prefix)/lib64
  # Detailed destination directories
  BINLIBDEST=	$(LIBDIR)/python$(VERSION)
  LIBDEST=	$(SCRIPTDIR)/python$(VERSION)
@@ -96,7 +110,7 @@ diff -up Python-2.7rc2/Makefile.pre.in.debug-build Python-2.7rc2/Makefile.pre.in
  LIBP=		$(LIBDIR)/python$(VERSION)
  
  # Symbols used for using shared libraries
-@@ -114,6 +114,12 @@ DESTSHARED=	$(BINLIBDEST)/lib-dynload
+@@ -117,6 +117,12 @@ DESTSHARED=	$(BINLIBDEST)/lib-dynload
  EXE=		@EXEEXT@
  BUILDEXE=	@BUILDEXEEXT@
  
@@ -109,7 +123,7 @@ diff -up Python-2.7rc2/Makefile.pre.in.debug-build Python-2.7rc2/Makefile.pre.in
  # Short name and location for Mac OS X Python framework
  UNIVERSALSDK=@UNIVERSALSDK@
  PYTHONFRAMEWORK=	@PYTHONFRAMEWORK@
-@@ -177,8 +183,8 @@ LIBOBJDIR=	Python/
+@@ -180,8 +186,8 @@ LIBOBJDIR=	Python/
  LIBOBJS=	@LIBOBJS@
  UNICODE_OBJS=   @UNICODE_OBJS@
  
@@ -120,29 +134,30 @@ diff -up Python-2.7rc2/Makefile.pre.in.debug-build Python-2.7rc2/Makefile.pre.in
  
  # The task to run while instrument when building the profile-opt target
  PROFILE_TASK=	$(srcdir)/Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
-@@ -409,7 +415,7 @@ sharedmods: $(BUILDPYTHON)
- 	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' LDFLAGS='$(LDFLAGS)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
+@@ -413,7 +419,7 @@ sharedmods: $(BUILDPYTHON)
+ 	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
  	esac
  
 -libpython$(VERSION).so: $(LIBRARY_OBJS)
 +libpython$(VERSION)$(DEBUG_EXT).so: $(LIBRARY_OBJS)
  	if test $(INSTSONAME) != $(LDLIBRARY); then \
- 		$(LDSHARED) $(LDFLAGS) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
+ 		$(BLDSHARED) -Wl,-h$(INSTSONAME) -o $(INSTSONAME) $(LIBRARY_OBJS) $(MODLIBS) $(SHLIBS) $(LIBC) $(LIBM) $(LDLAST); \
  		$(LN) -f $(INSTSONAME) $@; \
-@@ -788,9 +794,9 @@ bininstall:	altbininstall
- 	then rm -f $(DESTDIR)$(BINDIR)/$(PYTHON); \
- 	else true; \
+@@ -798,10 +804,10 @@ bininstall:	altbininstall
  	fi
--	(cd $(DESTDIR)$(BINDIR); $(LN) python$(VERSION)$(EXE) $(PYTHON))
--	-rm -f $(DESTDIR)$(BINDIR)/python-config
--	(cd $(DESTDIR)$(BINDIR); $(LN) -s python$(VERSION)-config python-config)
-+	(cd $(DESTDIR)$(BINDIR); $(LN) python$(VERSION)$(DEBUG_SUFFIX)$(EXE) $(PYTHON))
+ 	(cd $(DESTDIR)$(BINDIR); $(LN) -s python2$(EXE) $(PYTHON))
+ 	-rm -f $(DESTDIR)$(BINDIR)/python2$(EXE)
+-	(cd $(DESTDIR)$(BINDIR); $(LN) -s python$(VERSION)$(EXE) python2$(EXE))
++	(cd $(DESTDIR)$(BINDIR); $(LN) -s python$(VERSION)$(DEBUG_SUFFIX)$(EXE) python2$(EXE))
 +	-rm -f $(DESTDIR)$(BINDIR)/python$(DEBUG_SUFFIX)-config
-+	(cd $(DESTDIR)$(BINDIR); $(LN) -s python$(VERSION)$(DEBUG_SUFFIX)-config python$(DEBUG_SUFFIX)-config)
++	(cd $(DESTDIR)$(BINDIR); $(LN) -s python$(VERSION)$(DEBUG_SUFFIX)-config python2-config)
+ 	-rm -f $(DESTDIR)$(BINDIR)/python2-config
+-	(cd $(DESTDIR)$(BINDIR); $(LN) -s python$(VERSION)-config python2-config)
+-	-rm -f $(DESTDIR)$(BINDIR)/python-config
+ 	(cd $(DESTDIR)$(BINDIR); $(LN) -s python2-config python-config)
  	-test -d $(DESTDIR)$(LIBPC) || $(INSTALL) -d -m $(DIRMODE) $(DESTDIR)$(LIBPC)
- 	-rm -f $(DESTDIR)$(LIBPC)/python.pc
- 	(cd $(DESTDIR)$(LIBPC); $(LN) -s python-$(VERSION).pc python.pc)
-@@ -806,7 +812,7 @@ altbininstall:	$(BUILDPYTHON)
+ 	-rm -f $(DESTDIR)$(LIBPC)/python2.pc
+@@ -820,7 +826,7 @@ altbininstall:	$(BUILDPYTHON)
  		else	true; \
  		fi; \
  	done
@@ -151,7 +166,7 @@ diff -up Python-2.7rc2/Makefile.pre.in.debug-build Python-2.7rc2/Makefile.pre.in
  	if test -f $(LDLIBRARY); then \
  		if test -n "$(DLLLIBRARY)" ; then \
  			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
-@@ -951,10 +957,11 @@ $(srcdir)/Lib/$(PLATDIR):
+@@ -970,10 +976,11 @@ $(srcdir)/Lib/$(PLATDIR):
  	export EXE; EXE="$(BUILDEXE)"; \
  	cd $(srcdir)/Lib/$(PLATDIR); $(RUNSHARED) ./regen
  
@@ -165,7 +180,7 @@ diff -up Python-2.7rc2/Makefile.pre.in.debug-build Python-2.7rc2/Makefile.pre.in
  
  # Install the include files
  INCLDIRSTOMAKE=$(INCLUDEDIR) $(CONFINCLUDEDIR) $(INCLUDEPY) $(CONFINCLUDEPY)
-@@ -975,13 +982,13 @@ inclinstall:
+@@ -994,13 +1001,13 @@ inclinstall:
  	$(INSTALL_DATA) pyconfig.h $(DESTDIR)$(CONFINCLUDEPY)/pyconfig.h
  
  # Install the library and miscellaneous stuff needed for extending/embedding
@@ -182,7 +197,7 @@ diff -up Python-2.7rc2/Makefile.pre.in.debug-build Python-2.7rc2/Makefile.pre.in
  	@for i in $(LIBDIR) $(LIBP) $(LIBPL) $(LIBPC); \
  	do \
  		if test ! -d $(DESTDIR)$$i; then \
-@@ -1000,8 +1007,7 @@ libainstall:	all python-config
+@@ -1019,8 +1026,7 @@ libainstall:	all python-config
  	$(INSTALL_DATA) Misc/python.pc $(DESTDIR)$(LIBPC)/python-$(VERSION).pc
  	$(INSTALL_SCRIPT) $(srcdir)/Modules/makesetup $(DESTDIR)$(LIBPL)/makesetup
  	$(INSTALL_SCRIPT) $(srcdir)/install-sh $(DESTDIR)$(LIBPL)/install-sh
@@ -192,9 +207,9 @@ diff -up Python-2.7rc2/Makefile.pre.in.debug-build Python-2.7rc2/Makefile.pre.in
  	@if [ -s Modules/python.exp -a \
  		"`echo $(MACHDEP) | sed 's/^\(...\).*/\1/'`" = "aix" ]; then \
  		echo; echo "Installing support files for building shared extension modules on AIX:"; \
-diff -up Python-2.7rc2/Misc/python-config.in.debug-build Python-2.7rc2/Misc/python-config.in
---- Python-2.7rc2/Misc/python-config.in.debug-build	2010-03-18 20:08:44.000000000 -0400
-+++ Python-2.7rc2/Misc/python-config.in	2010-06-24 12:59:28.182375371 -0400
+diff -up Python-2.7.3/Misc/python-config.in.debug-build Python-2.7.3/Misc/python-config.in
+--- Python-2.7.3/Misc/python-config.in.debug-build	2012-04-09 19:07:33.000000000 -0400
++++ Python-2.7.3/Misc/python-config.in	2012-04-13 00:13:53.931498561 -0400
 @@ -45,7 +45,7 @@ for opt in opt_flags:
  
      elif opt in ('--libs', '--ldflags'):
@@ -204,9 +219,9 @@ diff -up Python-2.7rc2/Misc/python-config.in.debug-build Python-2.7rc2/Misc/pyth
          # add the prefix/lib/pythonX.Y/config dir, but only if there is no
          # shared library in prefix/lib/.
          if opt == '--ldflags':
-diff -up Python-2.7rc2/Modules/makesetup.debug-build Python-2.7rc2/Modules/makesetup
---- Python-2.7rc2/Modules/makesetup.debug-build	2007-09-05 07:47:34.000000000 -0400
-+++ Python-2.7rc2/Modules/makesetup	2010-06-24 12:59:28.182375371 -0400
+diff -up Python-2.7.3/Modules/makesetup.debug-build Python-2.7.3/Modules/makesetup
+--- Python-2.7.3/Modules/makesetup.debug-build	2012-04-09 19:07:34.000000000 -0400
++++ Python-2.7.3/Modules/makesetup	2012-04-13 00:13:53.931498561 -0400
 @@ -233,7 +233,7 @@ sed -e 's/[ 	]*#.*//' -e '/^[ 	]*$/d' |
  			*$mod.o*)	base=$mod;;
  			*)		base=${mod}module;;
@@ -216,9 +231,9 @@ diff -up Python-2.7rc2/Modules/makesetup.debug-build Python-2.7rc2/Modules/makes
  			case $doconfig in
  			no)	SHAREDMODS="$SHAREDMODS $file";;
  			esac
-diff -up Python-2.7rc2/Python/dynload_shlib.c.debug-build Python-2.7rc2/Python/dynload_shlib.c
---- Python-2.7rc2/Python/dynload_shlib.c.debug-build	2010-05-09 10:46:46.000000000 -0400
-+++ Python-2.7rc2/Python/dynload_shlib.c	2010-06-24 12:59:28.183377733 -0400
+diff -up Python-2.7.3/Python/dynload_shlib.c.debug-build Python-2.7.3/Python/dynload_shlib.c
+--- Python-2.7.3/Python/dynload_shlib.c.debug-build	2012-04-09 19:07:35.000000000 -0400
++++ Python-2.7.3/Python/dynload_shlib.c	2012-04-13 00:13:53.931498561 -0400
 @@ -46,11 +46,16 @@ const struct filedescr _PyImport_DynLoad
      {"module.exe", "rb", C_EXTENSION},
      {"MODULE.EXE", "rb", C_EXTENSION},
@@ -239,10 +254,10 @@ diff -up Python-2.7rc2/Python/dynload_shlib.c.debug-build Python-2.7rc2/Python/d
      {0, 0}
  };
  
-diff -up Python-2.7rc2/Python/sysmodule.c.debug-build Python-2.7rc2/Python/sysmodule.c
---- Python-2.7rc2/Python/sysmodule.c.debug-build	2010-05-21 13:12:38.000000000 -0400
-+++ Python-2.7rc2/Python/sysmodule.c	2010-06-24 12:59:28.184375034 -0400
-@@ -1557,6 +1557,12 @@ _PySys_Init(void)
+diff -up Python-2.7.3/Python/sysmodule.c.debug-build Python-2.7.3/Python/sysmodule.c
+--- Python-2.7.3/Python/sysmodule.c.debug-build	2012-04-09 19:07:35.000000000 -0400
++++ Python-2.7.3/Python/sysmodule.c	2012-04-13 00:13:53.932498549 -0400
+@@ -1506,6 +1506,12 @@ _PySys_Init(void)
                          PyString_FromString("legacy"));
  #endif
  
