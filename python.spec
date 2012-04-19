@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -126,7 +126,11 @@ BuildRequires: autoconf
 BuildRequires: bzip2
 BuildRequires: bzip2-devel
 BuildRequires: db4-devel >= 4.8
-BuildRequires: expat-devel
+
+# expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  We use
+# it (in pyexpat) in order to enable the fix in Python-2.7.3 for CVE-2012-0876:
+BuildRequires: expat-devel >= 2.1.0
+
 BuildRequires: findutils
 BuildRequires: gcc-c++
 %if %{with_gdbm}
@@ -695,6 +699,12 @@ Group: Applications/System
 
 # Needed for ctypes, to load libraries, worked around for Live CDs size
 # Requires: binutils
+
+# expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  We use
+# this symbol (in pyexpat), so we must explicitly state this dependency to
+# prevent "import pyexpat" from failing with a linker error if someone hasn't
+# yet upgraded expat:
+Requires: expat >= 2.1.0
 
 %description libs
 This package contains runtime libraries for use by Python:
@@ -1753,6 +1763,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Apr 19 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-3
+- add explicit version requirements on expat to avoid linkage problems with
+XML_SetHashSalt
+
 * Wed Apr 18 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-2
 - fix -config symlinks (patch 112; rhbz#813836)
 
