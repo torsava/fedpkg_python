@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1169,10 +1169,6 @@ cp -a save_bits_of_test/* %{buildroot}/%{pylibdir}/test
 fi
 
 %if %{main_python}
-ln -s python2.7-debug-config %{buildroot}%{_bindir}/python-debug-config
-%if 0%{?with_debug_build}
-ln -s python-debug %{buildroot}%{_bindir}/python2-debug
-%endif # with_debug_build
 %else
 mv %{buildroot}%{_bindir}/python %{buildroot}%{_bindir}/%{python}
 %if 0%{?with_debug_build}
@@ -1573,6 +1569,7 @@ rm -fr %{buildroot}
 %doc Misc/README.valgrind Misc/valgrind-python.supp Misc/gdbinit
 %if %{main_python}
 %{_bindir}/python-config
+%{_bindir}/python2-config
 %endif
 %{_bindir}/python%{pybasever}-config
 %{_libdir}/libpython%{pybasever}.so
@@ -1712,10 +1709,14 @@ rm -fr %{buildroot}
 
 # Analog of the -devel subpackage's files:
 %dir %{pylibdir}/config-debug
+%{_libdir}/pkgconfig/python-%{pybasever}-debug.pc
+%{_libdir}/pkgconfig/python-debug.pc
+%{_libdir}/pkgconfig/python2-debug.pc
 %{pylibdir}/config-debug/*
 %{_includedir}/python%{pybasever}-debug/*.h
 %if %{main_python}
 %{_bindir}/python-debug-config
+%{_bindir}/python2-debug-config
 %endif
 %{_bindir}/python%{pybasever}-debug-config
 %{_libdir}/libpython%{pybasever}_d.so
@@ -1752,6 +1753,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Apr 18 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-2
+- fix -config symlinks (patch 112; rhbz#813836)
+
 * Wed Apr 11 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-1
 - 2.7.3: refresh patch 102 (lib64); drop upstream patches 11 (ascii-to-lower),
 115 (pydoc robustness), 145 (linux2), 148 (gdbm magic values), 151 (deadlock
