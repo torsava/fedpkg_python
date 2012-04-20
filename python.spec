@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -615,6 +615,14 @@ Patch147: 00147-add-debug-malloc-stats.patch
 # which values are printed as "v@entry" rather than just "v":
 Patch153: 00153-fix-test_gdb-noise.patch
 
+# python3.spec on f15 has:
+#  Patch154: 00154-skip-urllib-test-requiring-working-DNS.patch
+
+# Avoid allocating thunks in ctypes unless absolutely necessary, to avoid
+# generating SELinux denials on "import ctypes" and "import uuid" when
+# embedding Python within httpd (rhbz#814391)
+Patch155: 00155-avoid-ctypes-thunks.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -933,6 +941,8 @@ done
 # 00151: upstream as of Python 2.7.3
 # 00152: not for python 2
 %patch153 -p0
+# 00154: not for python 2
+%patch155 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1763,6 +1773,11 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri Apr 20 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-4
+- avoid allocating thunks in ctypes unless absolutely necessary, to avoid
+generating SELinux denials on "import ctypes" and "import uuid" when embedding
+Python within httpd (patch 155; rhbz#814391)
+
 * Thu Apr 19 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-3
 - add explicit version requirements on expat to avoid linkage problems with
 XML_SetHashSalt
