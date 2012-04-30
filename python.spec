@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -624,8 +624,8 @@ Patch153: 00153-fix-test_gdb-noise.patch
 Patch155: 00155-avoid-ctypes-thunks.patch
 
 # Recent builds of gdb will only auto-load scripts from certain safe
-# locations.  Turn off this protection during the build to ensure that our
-# -gdb.py script can be loaded when running test_gdb (rhbz#817072):
+# locations.  Turn off this protection when running test_gdb in the selftest
+# suite to ensure that it can load our -gdb.py script (rhbz#817072):
 Patch156: 00156-gdb-autoload-safepath.patch
 
 # (New patches go here ^^^)
@@ -1779,6 +1779,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Apr 30 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-6
+- try again to fix test_gdb.py (patch 156; rhbz#817072)
+
 * Mon Apr 30 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-5
 - fix test_gdb.py (patch 156; rhbz#817072)
 
