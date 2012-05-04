@@ -46,7 +46,7 @@
 
 %global with_systemtap 1
 
-# some arches dont have valgrind so we need to disable its support on them
+# some arches don't have valgrind so we need to disable its support on them
 %ifarch %{ix86} x86_64 ppc ppc64 s390x
 %global with_valgrind 1
 %else
@@ -333,6 +333,7 @@ Patch17: python-2.6.4-distutils-rpath.patch
 # Patch setup.py so that it links against db-4.8:
 Patch54: python-2.6.4-setup-db48.patch
 
+# 00055 #
 # Systemtap support: add statically-defined probe points
 # Patch based on upstream bug: http://bugs.python.org/issue4111
 # fixed up by mjw and wcohen for 2.6.2, then fixed up by dmalcolm for 2.6.4
@@ -367,14 +368,17 @@ Patch102: python-2.7.3-lib64.patch
 # and platform-specific code go to /usr/lib64 not /usr/lib, on 64-bit archs:
 Patch103: python-2.7-lib64-sysconfig.patch
 
+# 00104 #
 # Only used when "%{_lib}" == "lib64"
 # Another lib64 fix, for distutils/tests/test_install.py; not upstream:
 Patch104: 00104-lib64-fix-for-test_install.patch
 
+# 00111 #
 # Patch the Makefile.pre.in so that the generated Makefile doesn't try to build
 # a libpythonMAJOR.MINOR.a (bug 550692):
 Patch111: 00111-no-static-lib.patch
 
+# 00112 #
 # Patch to support building both optimized vs debug stacks DSO ABIs, sharing
 # the same .py and .pyc files, using "_d.so" to signify a debug build of an
 # extension module.
@@ -439,12 +443,14 @@ Patch111: 00111-no-static-lib.patch
 Patch112: python-2.7.3-debug-build.patch
 
 
+# 00113 #
 # Add configure-time support for the COUNT_ALLOCS and CALL_PROFILE options
 # described at http://svn.python.org/projects/python/trunk/Misc/SpecialBuilds.txt
 # so that if they are enabled, they will be in that build's pyconfig.h, so that
 # extension modules will reliably use them
 Patch113: 00113-more-configuration-flags.patch
 
+# 00114 #
 # Add flags for statvfs.f_flag to the constant list in posixmodule (i.e. "os")
 # (rhbz:553020); partially upstream as http://bugs.python.org/issue7647
 Patch114: 00114-statvfs-f_flag-constants.patch
@@ -468,6 +474,7 @@ Patch114: 00114-statvfs-f_flag-constants.patch
 # For now, revert this patch:
 Patch121: python-2.7rc2-r79310.patch
 
+# 00125 #
 # COUNT_ALLOCS is useful for debugging, but the upstream behaviour of always
 # emitting debug info to stdout on exit is too verbose and makes it harder to
 # use the debug build.  Add a "PYTHONDUMPCOUNTS" environment variable which
@@ -489,6 +496,7 @@ Patch127: fix-test_structmember-on-64bit-bigendian.patch
 # Not yet sent upstream
 Patch128: python-2.7.1-fix_test_abc_with_COUNT_ALLOCS.patch
 
+# 00130 #
 # Add "--extension-suffix" option to python-config and python-debug-config
 # (rhbz#732808)
 #
@@ -505,12 +513,14 @@ Patch128: python-2.7.1-fix_test_abc_with_COUNT_ALLOCS.patch
 # Not yet sent upstream
 Patch130: python-2.7.2-add-extension-suffix-to-python-config.patch
 
+# 00131 #
 # The four tests in test_io built on top of check_interrupted_write_retry
 # fail when built in Koji, for ppc and ppc64; for some reason, the SIGALRM
 # handlers are never called, and the call to write runs to completion
 # (rhbz#732998)
 Patch131: 00131-disable-tests-in-test_io.patch
 
+# 00132 #
 # Add non-standard hooks to unittest for use in the "check" phase below, when
 # running selftests within the build:
 #   @unittest._skipInRpmBuild(reason)
@@ -524,53 +534,67 @@ Patch131: 00131-disable-tests-in-test_io.patch
 # these unittest hooks in their own "check" phases)
 Patch132: 00132-add-rpmbuild-hooks-to-unittest.patch
 
+# 00133 #
 # "dl" is deprecated, and test_dl doesn't work on 64-bit builds:
 Patch133: 00133-skip-test_dl.patch
 
+# 00134 #
 # Fix a failure in test_sys.py when configured with COUNT_ALLOCS enabled
 # Not yet sent upstream
 Patch134: 00134-fix-COUNT_ALLOCS-failure-in-test_sys.patch
 
+# 00135 #
 # Skip "test_callback_in_cycle_resurrection" in a debug build, where it fails:
 # Not yet sent upstream
 Patch135: 00135-skip-test-within-test_weakref-in-debug-build.patch
 
+# 00136 #
 # Some tests try to seek on sys.stdin, but don't work as expected when run
 # within Koji/mock; skip them within the rpm build:
 Patch136: 00136-skip-tests-of-seeking-stdin-in-rpmbuild.patch
 
+# 00137 #
 # Some tests within distutils fail when run in an rpmbuild:
 Patch137: 00137-skip-distutils-tests-that-fail-in-rpmbuild.patch
 
+# 00138 #
 # Fixup some tests within distutils to work with how debug builds are set up:
 Patch138: 00138-fix-distutils-tests-in-debug-build.patch
 
+# 00139 #
 # ARM-specific: skip known failure in test_float:
 #  http://bugs.python.org/issue8265 (rhbz#706253)
 Patch139: 00139-skip-test_float-known-failure-on-arm.patch
 
+# 00140 #
 # Sparc-specific: skip known failure in test_ctypes:
 #  http://bugs.python.org/issue8314 (rhbz#711584)
 # which appears to be a libffi bug
 Patch140: 00140-skip-test_ctypes-known-failure-on-sparc.patch
 
+# 00141 #
 # Fix test_gc's test_newinstance case when configured with COUNT_ALLOCS:
 Patch141: 00141-fix-test_gc_with_COUNT_ALLOCS.patch
 
+# 00142 #
 # Some pty tests fail when run in mock (rhbz#714627):
 Patch142: 00142-skip-failing-pty-tests-in-rpmbuild.patch
 
+# 00143 #
 # Fix the --with-tsc option on ppc64, and rework it on 32-bit ppc to avoid
 # aliasing violations (rhbz#698726)
 # Sent upstream as http://bugs.python.org/issue12872
 Patch143: 00143-tsc-on-ppc.patch
 
+# 00144 #
 # (Optionally) disable the gdbm module:
 Patch144: 00144-no-gdbm.patch
 
+# 00145 #
 # Upstream as of Python 2.7.3:
 #  Patch145: 00145-force-sys-platform-to-be-linux2.patch
 
+# 00146 #
 # Support OpenSSL FIPS mode (e.g. when OPENSSL_FORCE_FIPS_MODE=1 is set)
 # - handle failures from OpenSSL (e.g. on attempts to use MD5 in a
 #   FIPS-enforcing environment)
@@ -588,41 +612,51 @@ Patch144: 00144-no-gdbm.patch
 # (rhbz#563986)
 Patch146: 00146-hashlib-fips.patch
 
+# 00147 #
 # Add a sys._debugmallocstats() function
 # Based on patch 202 from RHEL 5's python.spec, with updates from rhbz#737198
 #  Not yet sent upstream
 Patch147: 00147-add-debug-malloc-stats.patch
 
+# 00148 #
 # Upstream as of Python 2.7.3:
 #  Patch148: 00148-gdbm-1.9-magic-values.patch
 
+# 00149 #
 # python3.spec's
 #   Patch149: 00149-backport-issue11254-pycache-bytecompilation-fix.patch
 # is not relevant for Python 2
 
+# 00150 #
 # python3.spec has:
 #  Patch150: 00150-disable-rAssertAlmostEqual-cmath-on-ppc.patch
 # as a workaround for a glibc bug on PPC (bz #750811)
 
+# 00151 #
 # Upstream as of Python 2.7.3:
 #  Patch151: 00151-fork-deadlock.patch
 
+# 00152 #
 # python3.spec has:
 #  Patch152: 00152-fix-test-gdb-regex.patch
 
+# 00153 #
 # Strip out lines of the form "warning: Unable to open ..." from gdb's stderr
 # when running test_gdb.py; also cope with change to gdb in F17 onwards in
 # which values are printed as "v@entry" rather than just "v":
 Patch153: 00153-fix-test_gdb-noise.patch
 
+# 00154 #
 # python3.spec on f15 has:
 #  Patch154: 00154-skip-urllib-test-requiring-working-DNS.patch
 
+# 00155 #
 # Avoid allocating thunks in ctypes unless absolutely necessary, to avoid
 # generating SELinux denials on "import ctypes" and "import uuid" when
 # embedding Python within httpd (rhbz#814391)
 Patch155: 00155-avoid-ctypes-thunks.patch
 
+# 00156 #
 # Recent builds of gdb will only auto-load scripts from certain safe
 # locations.  Turn off this protection when running test_gdb in the selftest
 # suite to ensure that it can load our -gdb.py script (rhbz#817072):
