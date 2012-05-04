@@ -1059,18 +1059,18 @@ BuildPython() {
 
 %configure \
   --enable-ipv6 \
-  --enable-unicode=%{unicode} \
   --enable-shared \
+  --enable-unicode=%{unicode} \
+  --with-dbmliborder=gdbm:ndbm:bdb \
+  --with-system-expat \
   --with-system-ffi \
-%if 0%{?with_valgrind}
-  --with-valgrind \
-%endif
 %if 0%{?with_systemtap}
   --with-dtrace \
   --with-tapset-install-dir=%{tapsetdir} \
 %endif
-  --with-system-expat \
-  --with-dbmliborder=gdbm:ndbm:bdb \
+%if 0%{?with_valgrind}
+  --with-valgrind \
+%endif
   $ExtraConfigArgs \
   %{nil}
 
