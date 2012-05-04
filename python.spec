@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -685,7 +685,7 @@ Patch156: 00156-gdb-autoload-safepath.patch
 # This is the generated patch to "configure"; see the description of
 #   %{regenerate_autotooling_patch}
 # above:
-Patch300: autotool-intermediates.patch
+Patch5000: 05000-autotool-intermediates.patch
 
 # ======================================================
 # Additional metadata, and subpackages
@@ -991,7 +991,7 @@ find -name "*~" |xargs rm -f
 %if ! 0%{regenerate_autotooling_patch}
 # Normally we apply the patch to "configure"
 # We don't apply the patch if we're working towards regenerating it
-%patch300 -p0 -b .autotool-intermediates
+%patch5000 -p0 -b .autotool-intermediates
 %endif
 
 
@@ -1031,7 +1031,7 @@ PATH=~/autoconf-2.65/bin:$PATH autoconf
 autoheader
 
 # Regenerate the patch:
-gendiff . .autotool-intermediates > %{PATCH300}
+gendiff . .autotool-intermediates > %{PATCH5000}
 
 
 # Exit the build
@@ -1813,6 +1813,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri May  4 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-7
+- renumber autotools patch from 300 to 5000
+- specfile cleanups
+
 * Mon Apr 30 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-6
 - try again to fix test_gdb.py (patch 156; rhbz#817072)
 
