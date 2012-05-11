@@ -376,6 +376,7 @@ Patch104: 00104-lib64-fix-for-test_install.patch
 # 00111 #
 # Patch the Makefile.pre.in so that the generated Makefile doesn't try to build
 # a libpythonMAJOR.MINOR.a (bug 550692):
+# Downstream only: not appropriate for upstream
 Patch111: 00111-no-static-lib.patch
 
 # 00112 #
@@ -448,11 +449,13 @@ Patch112: python-2.7.3-debug-build.patch
 # described at http://svn.python.org/projects/python/trunk/Misc/SpecialBuilds.txt
 # so that if they are enabled, they will be in that build's pyconfig.h, so that
 # extension modules will reliably use them
+# Not yet sent upstream
 Patch113: 00113-more-configuration-flags.patch
 
 # 00114 #
 # Add flags for statvfs.f_flag to the constant list in posixmodule (i.e. "os")
 # (rhbz:553020); partially upstream as http://bugs.python.org/issue7647
+# Not yet sent upstream
 Patch114: 00114-statvfs-f_flag-constants.patch
 
 # Upstream as of Python 2.7.3:
@@ -479,7 +482,7 @@ Patch121: python-2.7rc2-r79310.patch
 # emitting debug info to stdout on exit is too verbose and makes it harder to
 # use the debug build.  Add a "PYTHONDUMPCOUNTS" environment variable which
 # must be set to enable the output on exit
-# Not yet sent upstream:
+# Not yet sent upstream
 Patch125: 00125-less-verbose-COUNT_ALLOCS.patch
 
 # Fix dbm module on big-endian 64-bit
@@ -574,6 +577,7 @@ Patch140: 00140-skip-test_ctypes-known-failure-on-sparc.patch
 
 # 00141 #
 # Fix test_gc's test_newinstance case when configured with COUNT_ALLOCS:
+# Not yet sent upstream
 Patch141: 00141-fix-test_gc_with_COUNT_ALLOCS.patch
 
 # 00142 #
@@ -644,6 +648,7 @@ Patch147: 00147-add-debug-malloc-stats.patch
 # Strip out lines of the form "warning: Unable to open ..." from gdb's stderr
 # when running test_gdb.py; also cope with change to gdb in F17 onwards in
 # which values are printed as "v@entry" rather than just "v":
+# Not yet sent upstream
 Patch153: 00153-fix-test_gdb-noise.patch
 
 # 00154 #
@@ -660,6 +665,7 @@ Patch155: 00155-avoid-ctypes-thunks.patch
 # Recent builds of gdb will only auto-load scripts from certain safe
 # locations.  Turn off this protection when running test_gdb in the selftest
 # suite to ensure that it can load our -gdb.py script (rhbz#817072):
+# Not yet sent upstream
 Patch156: 00156-gdb-autoload-safepath.patch
 
 # (New patches go here ^^^)
