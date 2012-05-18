@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -668,6 +668,22 @@ Patch155: 00155-avoid-ctypes-thunks.patch
 # Not yet sent upstream
 Patch156: 00156-gdb-autoload-safepath.patch
 
+# 00157 #
+# Update uid/gid handling throughout the standard library: uid_t and gid_t are
+# unsigned 32-bit values, but existing code often passed them through C long
+# values, which are signed 32-bit values on 32-bit architectures, leading to
+# negative int objects for uid/gid values >= 2^31 on 32-bit architectures.
+#
+# Introduce _PyObject_FromUid/Gid to convert uid_t/gid_t values to python
+# objects, using int objects where the value will fit (long objects otherwise),
+# and _PyArg_ParseUid/Gid to convert int/long to uid_t/gid_t, with -1 allowed
+# as a special case (since this is given special meaning by the chown syscall)
+#
+# Update standard library to use this throughout for uid/gid values, so that
+# very large uid/gid values are round-trippable, and -1 remains usable.
+# (rhbz#697470)
+Patch157: 00157-uid-gid-overflows.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -989,6 +1005,7 @@ done
 # 00154: not for python 2
 %patch155 -p1
 %patch156 -p1
+%patch157 -p1 -b .uid-gid-overflows
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1819,6 +1836,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue May 15 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-8
+- update uid/gid handling to avoid int overflows seen with uid/gid
+values >= 2^31 on 32-bit architectures (patch 157; rhbz#697470)
+
 * Fri May  4 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-7
 - renumber autotools patch from 300 to 5000
 - specfile cleanups
