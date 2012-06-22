@@ -47,7 +47,7 @@
 %global with_systemtap 1
 
 # some arches don't have valgrind so we need to disable its support on them
-%ifarch %{ix86} x86_64 ppc ppc64 s390x
+%ifarch %{ix86} x86_64 ppc %{power64} s390x
 %global with_valgrind 1
 %else
 %global with_valgrind 0
@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -970,7 +970,7 @@ done
 
 %patch130 -p1
 
-%ifarch ppc ppc64
+%ifarch ppc %{power64}
 %patch131 -p1
 %endif
 
@@ -1129,7 +1129,7 @@ LD_LIBRARY_PATH="$topdir/$ConfDir" PATH=$PATH:$topdir/$ConfDir make -s EXTRA_CFL
 BuildPython debug \
   python-debug \
   python%{pybasever}-debug \
-%ifarch %{ix86} x86_64 ppc ppc64
+%ifarch %{ix86} x86_64 ppc %{power64}
   "--with-pydebug --with-tsc --with-count-allocs --with-call-profile" \
 %else
   "--with-pydebug --with-count-allocs --with-call-profile" \
@@ -1327,7 +1327,7 @@ install -d %{buildroot}/usr/lib/python%{pybasever}/site-packages
 %global _pyconfig32_h pyconfig-32.h
 %global _pyconfig64_h pyconfig-64.h
 
-%ifarch ppc64 s390x x86_64 ia64 alpha sparc64
+%ifarch %{power64} s390x x86_64 ia64 alpha sparc64
 %global _pyconfig_h %{_pyconfig64_h}
 %else
 %global _pyconfig_h %{_pyconfig32_h}
@@ -1400,7 +1400,7 @@ done
 # Install a tapset for this libpython into tapsetdir, fixing up the path to the
 # library:
 mkdir -p %{buildroot}%{tapsetdir}
-%ifarch ppc64 s390x x86_64 ia64 alpha sparc64
+%ifarch %{power64} s390x x86_64 ia64 alpha sparc64
 %global libpython_stp_optimized libpython%{pybasever}-64.stp
 %global libpython_stp_debug     libpython%{pybasever}-debug-64.stp
 %else
@@ -1836,6 +1836,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri Jun 22 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-9
+- use rpm macro for power64 (rhbz#834653)
+
 * Tue May 15 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-8
 - update uid/gid handling to avoid int overflows seen with uid/gid
 values >= 2^31 on 32-bit architectures (patch 157; rhbz#697470)
