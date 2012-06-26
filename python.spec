@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1836,6 +1836,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Jun 26 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-10
+- fix missing include in uid/gid handling patch (patch 157; rhbz#830405)
+
 * Fri Jun 22 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-9
 - use rpm macro for power64 (rhbz#834653)
 
