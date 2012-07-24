@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -684,6 +684,15 @@ Patch156: 00156-gdb-autoload-safepath.patch
 # (rhbz#697470)
 Patch157: 00157-uid-gid-overflows.patch
 
+# 00158
+# This patch fixes a memory leak in _hashlib module, as reported in
+# RHBZ #836285; upstream report http://bugs.python.org/issue15219.
+# The patch has been accepted upstream, so this should be commented out
+# when packaging next upstream release.
+# The fix for Fedora specific "implement_specific_EVP_new()" function
+# has been merged into patch 00146.
+Patch158: 00158-fix-hashlib-leak.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1006,6 +1015,7 @@ done
 %patch155 -p1
 %patch156 -p1
 %patch157 -p1 -b .uid-gid-overflows
+%patch158 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1836,6 +1846,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Jul 17 2012 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.3-11
+- fix memory leak in module _hashlib (patch 158, rhbz#836285)
+
 * Tue Jun 26 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-10
 - fix missing include in uid/gid handling patch (patch 157; rhbz#830405)
 
