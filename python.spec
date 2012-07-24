@@ -125,7 +125,9 @@ Provides: python(abi) = %{pybasever}
 BuildRequires: autoconf
 BuildRequires: bzip2
 BuildRequires: bzip2-devel
+%if 0%{?fedora} < 18
 BuildRequires: db4-devel >= 4.8
+%endif
 
 # expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  We use
 # it (in pyexpat) in order to enable the fix in Python-2.7.3 for CVE-2012-0876:
@@ -138,6 +140,9 @@ BuildRequires: gdbm-devel
 %endif
 BuildRequires: glibc-devel
 BuildRequires: gmp-devel
+%if 0%{?fedora} >= 18
+BuildRequires: libdb4-devel
+%endif
 BuildRequires: libffi-devel
 BuildRequires: libGL-devel
 BuildRequires: libX11-devel
@@ -693,6 +698,12 @@ Patch157: 00157-uid-gid-overflows.patch
 # has been merged into patch 00146.
 Patch158: 00158-fix-hashlib-leak.patch
 
+# From F18 on, there is a libdb4 package, that replaces db4. It places header
+# files in "/usr/include/libdb4", not in "/usr/include/db4", this patch
+# fixes this.
+# Downstream only modification.
+Patch159: 00159-correct-libdb-include-path.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1016,6 +1027,9 @@ done
 %patch156 -p1
 %patch157 -p1 -b .uid-gid-overflows
 %patch158 -p1
+%if 0%{?fedora} >= 18
+%patch159 -p1 -F 3
+%endif
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1848,6 +1862,7 @@ rm -fr %{buildroot}
 %changelog
 * Tue Jul 17 2012 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.3-11
 - fix memory leak in module _hashlib (patch 158, rhbz#836285)
+- fix db4 include path for libdb4 package (f18 and above) (patch 159)
 
 * Tue Jun 26 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-10
 - fix missing include in uid/gid handling patch (patch 157; rhbz#830405)
