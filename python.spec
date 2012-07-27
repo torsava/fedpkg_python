@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 11%{?dist}
+Release: 12%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1860,6 +1860,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri Jul 27 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.7.3-12
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Tue Jul 17 2012 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.3-11
 - fix memory leak in module _hashlib (patch 158, rhbz#836285)
 - fix db4 include path for libdb4 package (f18 and above) (patch 159)
