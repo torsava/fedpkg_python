@@ -689,7 +689,7 @@ Patch156: 00156-gdb-autoload-safepath.patch
 # (rhbz#697470)
 Patch157: 00157-uid-gid-overflows.patch
 
-# 00158
+# 00158 #
 # This patch fixes a memory leak in _hashlib module, as reported in
 # RHBZ #836285; upstream report http://bugs.python.org/issue15219.
 # The patch has been accepted upstream, so this should be commented out
@@ -698,11 +698,30 @@ Patch157: 00157-uid-gid-overflows.patch
 # has been merged into patch 00146.
 Patch158: 00158-fix-hashlib-leak.patch
 
+# 00159 #
 # From F18 on, there is a libdb4 package, that replaces db4. It places header
 # files in "/usr/include/libdb4", not in "/usr/include/db4", this patch
 # fixes this.
 # Downstream only modification.
 Patch159: 00159-correct-libdb-include-path.patch
+
+# 00160 #
+# python3.spec's
+#   Patch160: 00160-disable-test_fs_holes-in-rpm-build.patch
+# is not relevant for Python 2
+
+# 00161 #
+# python3.spec has:
+#   Patch161: 00161-fix-test_tools-directory.patch
+# which will likely become relevant for Python 2 next time we rebase
+
+# 00162 #
+# python3.spec has:
+#  Patch162: 00162-distutils-sysconfig-fix-CC-options.patch
+
+# 00163 #
+# python3.spec has:
+#  Patch163: 00163-disable-parts-of-test_socket-in-rpm-build.patch
 
 # (New patches go here ^^^)
 #
@@ -1030,7 +1049,10 @@ done
 %if 0%{?fedora} >= 18
 %patch159 -p1 -F 3
 %endif
-
+# 00160: not for python 2
+# 00161: not for python 2 yet
+# 00162: not for python 2 yet
+# 00163: not for python 2 yet
 
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
