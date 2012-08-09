@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 12%{?dist}
+Release: 13%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1046,9 +1046,7 @@ done
 %patch156 -p1
 %patch157 -p1 -b .uid-gid-overflows
 %patch158 -p1
-%if 0%{?fedora} >= 18
 %patch159 -p1 -F 3
-%endif
 # 00160: not for python 2
 # 00161: not for python 2 yet
 # 00162: not for python 2 yet
@@ -1882,6 +1880,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Aug  9 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-13
+- remove f18 conditional from patch 159
+
 * Fri Jul 27 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.7.3-12
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
