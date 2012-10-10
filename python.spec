@@ -125,7 +125,7 @@ Provides: python(abi) = %{pybasever}
 BuildRequires: autoconf
 BuildRequires: bzip2
 BuildRequires: bzip2-devel
-%if 0%{?fedora} < 18
+%if 0%{?fedora} && 0%{?fedora} < 18 || 0%{?rhel} && 0%{?rhel} < 7
 BuildRequires: db4-devel >= 4.8
 %endif
 
@@ -140,7 +140,7 @@ BuildRequires: gdbm-devel
 %endif
 BuildRequires: glibc-devel
 BuildRequires: gmp-devel
-%if 0%{?fedora} >= 18
+%if 0%{?fedora} >= 18 || 0%{?rhel} >= 7
 BuildRequires: libdb4-devel
 %endif
 BuildRequires: libffi-devel
