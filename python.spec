@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 13%{?dist}
+Release: 14%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -123,6 +123,7 @@ Provides: python(abi) = %{pybasever}
 # (keep this list alphabetized)
 
 BuildRequires: autoconf
+BuildRequires: bluez-libs-devel
 BuildRequires: bzip2
 BuildRequires: bzip2-devel
 %if 0%{?fedora} && 0%{?fedora} < 18 || 0%{?rhel} && 0%{?rhel} < 7
@@ -1880,6 +1881,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Nov 29 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-14
+- add BR on bluez-libs-devel (rhbz#879720)
+
 * Thu Aug  9 2012 David Malcolm <dmalcolm@redhat.com> - 2.7.3-13
 - remove f18 conditional from patch 159
 
