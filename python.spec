@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 15%{?dist}
+Release: 16%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1472,6 +1472,7 @@ sed \
 # ======================================================
 
 %check
+%ifnarch %{arm}
 topdir=$(pwd)
 CheckPython() {
   ConfName=$1
@@ -1521,6 +1522,8 @@ CheckPython \
 
 %endif # run_selftest_suite
 
+# arm
+%endif
 
 # ======================================================
 # Cleaning up
@@ -1881,6 +1884,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Feb 18 2013 Peter Robinson <pbrobinson@fedoraproject.org> 2.7.3-16
+- disable make check on ARM for the moment until 912025 is fixed
+
 * Mon Feb 11 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-15
 - add aarch64 (rhbz#909783)
 
