@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 18%{?dist}
+Release: 19%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -735,6 +735,13 @@ Patch159: 00159-correct-libdb-include-path.patch
 # within 2.7
 Patch165: 00165-crypt-module-salt-backport.patch
 
+# 00166 #
+# Bulletproof the gdb debugging hooks against the case where co_filename for
+# a frame can't be read from the inferior process (rhbz#912025)
+#
+# Not yet sent upstream
+Patch166: 00166-fix-fake-repr-in-gdb-hooks.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1067,6 +1074,7 @@ done
 # 00164: not for python 2 yet
 %patch165 -p1
 mv Modules/cryptmodule.c Modules/_cryptmodule.c
+%patch166 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1488,7 +1496,6 @@ sed \
 # ======================================================
 
 %check
-%ifnarch %{arm}
 topdir=$(pwd)
 CheckPython() {
   ConfName=$1
@@ -1538,8 +1545,6 @@ CheckPython \
 
 %endif # run_selftest_suite
 
-# arm
-%endif
 
 # ======================================================
 # Cleaning up
@@ -1900,6 +1905,11 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Feb 19 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-19
+- bulletproof the gdb debugging hooks against a failure seen in ARM builds
+(patch 166; rhbz#912025)
+- re-enable make check on ARM (rhbz#912025)
+
 * Tue Feb 19 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-18
 - backport pre-canned ways of salting a password to the "crypt" module from 3.3
 (rhbz#835021)
