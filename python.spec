@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 17%{?dist}
+Release: 18%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -722,6 +722,19 @@ Patch159: 00159-correct-libdb-include-path.patch
 # python3.spec has:
 #  Patch163: 00163-disable-parts-of-test_socket-in-rpm-build.patch
 
+# 00164 #
+# python3.spec has:
+#  Patch164: 00164-disable-interrupted_write-tests-on-ppc.patch
+
+# 00165 #
+# Backport to Python 2 from Python 3.3 of improvements to the "crypt" module
+# adding precanned ways of salting a password (rhbz#835021)
+# Based on r88500 patch to py3k from Python 3.3
+# plus 6482dd1c11ed, 0586c699d467, 62994662676a, 74a1110a3b50, plus edits
+# to docstrings to note that this additional functionality is not standard
+# within 2.7
+Patch165: 00165-crypt-module-salt-backport.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1051,6 +1064,10 @@ done
 # 00161: not for python 2 yet
 # 00162: not for python 2 yet
 # 00163: not for python 2 yet
+# 00164: not for python 2 yet
+%patch165 -p1
+mv Modules/cryptmodule.c Modules/_cryptmodule.c
+
 
 # This shouldn't be necesarry, but is right now (2.2a3)
 find -name "*~" |xargs rm -f
@@ -1883,6 +1900,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Feb 19 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-18
+- backport pre-canned ways of salting a password to the "crypt" module from 3.3
+(rhbz#835021)
+
 * Tue Feb 19 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-17
 - remove "_default_patch_fuzz" directive to avoid patches being silently
 misapplied (refresh patch 1, patch 101, patch 102, patch 111, patch 121,
