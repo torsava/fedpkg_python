@@ -6,8 +6,6 @@
 #global __python_ver 27
 %global unicode ucs4
 
-%global _default_patch_fuzz 2
-
 %if "%{__python_ver}" != "EMPTY"
 %global main_python 0
 %global python python%{__python_ver}
@@ -108,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 16%{?dist}
+Release: 17%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -277,7 +275,7 @@ Patch0: python-2.7.1-config.patch
 # in 2.2.1-12 as a response to the -g option needing TkInter installed
 # (Red Hat Linux 8)
 # Not upstream
-Patch1: Python-2.2.1-pydocnogui.patch
+Patch1: 00001-pydocnogui.patch
 
 # Add $(CFLAGS) to the linker arguments when linking the "python" binary
 # since some architectures (sparc64) need this (rhbz:199373).
@@ -359,7 +357,7 @@ Patch55: 00055-systemtap.patch
 # contained additional changes that applied fixes to the internals of the regex
 # module, but these appear to have all been applied as part of 
 #  http://bugs.python.org/issue931848
-Patch101: python-2.3.4-lib64-regex.patch
+Patch101: 00101-lib64-regex.patch
 
 # Only used when "%{_lib}" == "lib64"
 # Fixup various paths throughout the build and in distutils from "lib" to "lib64",
@@ -481,7 +479,7 @@ Patch114: 00114-statvfs-f_flag-constants.patch
 # ImportError: No module named _struct
 #
 # For now, revert this patch:
-Patch121: python-2.7rc2-r79310.patch
+Patch121: 00121-revert-r79310.patch
 
 # 00125 #
 # COUNT_ALLOCS is useful for debugging, but the upstream behaviour of always
@@ -973,6 +971,8 @@ done
 # Try not disabling egg-infos, bz#414711
 #patch50 -p1 -b .egginfo
 
+%patch54 -p1 -b .setup-db48
+
 %patch101 -p1 -b .lib64-regex
 %if "%{_lib}" == "lib64"
 %patch102 -p1 -b .lib64
@@ -987,7 +987,6 @@ done
 %patch16 -p1 -b .rpath
 %patch17 -p1 -b .distutils-rpath
 
-%patch54 -p1 -b .setup-db48
 %if 0%{?with_systemtap}
 %patch55 -p1 -b .systemtap
 %endif
@@ -1002,7 +1001,7 @@ done
 
 # patch115: upstream as of Python 2.7.3
 
-%patch121 -p0 -R
+%patch121 -p1
 %patch125 -p1 -b .less-verbose-COUNT_ALLOCS
 %patch126 -p0 -b .fix-dbm_contains-on-64bit-bigendian
 %patch127 -p1 -b .fix-test_structmember-on-64bit-bigendian
@@ -1884,6 +1883,13 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Feb 19 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-17
+- remove "_default_patch_fuzz" directive to avoid patches being silently
+misapplied (refresh patch 1, patch 101, patch 102, patch 111, patch 121,
+patch 158; rename patch 1, patch 101, patch 121; apply patch 54 before the
+lib64 patches to avoid fuzz problems caused by the conditional application
+of the lib64 patches)
+
 * Mon Feb 18 2013 Peter Robinson <pbrobinson@fedoraproject.org> 2.7.3-16
 - disable make check on ARM for the moment until 912025 is fixed
 
