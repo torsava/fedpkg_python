@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 24%{?dist}
+Release: 25%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -771,6 +771,17 @@ Patch168: 00168-distutils-cflags.patch
 # (rhbz#879695)
 Patch169: 00169-avoid-implicit-usage-of-md5-in-multiprocessing.patch
 
+# 00170 #
+# In debug builds, try to print repr() when a C-level assert fails in the
+# garbage collector (typically indicating a reference-counting error
+# somewhere else e.g in an extension module)
+# Backported to 2.7 from a patch I sent upstream for py3k
+#   http://bugs.python.org/issue9263  (rhbz#614680)
+# hiding the proposed new macros/functions within gcmodule.c to avoid exposing
+# them within the extension API.
+# (rhbz#850013)
+Patch170: 00170-gc-assertions.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1107,6 +1118,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch167 -p1
 %patch168 -p1
 %patch169 -p1
+%patch170 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1939,6 +1951,11 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-25
+- in debug builds, try to print repr() when a C-level assert fails in the
+garbage collector (typically indicating a reference-counting error somewhere
+else e.g in an extension module) (patch 170; rhbz#850013)
+
 * Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-24
 - move lib2to3/tests from python-libs to python-test (rhbz#850056)
 
