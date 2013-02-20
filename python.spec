@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 22%{?dist}
+Release: 23%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -763,6 +763,14 @@ Patch167: 00167-disable-stack-navigation-tests-when-optimized-in-test_gdb.patch
 # (rhbz#849994)
 Patch168: 00168-distutils-cflags.patch
 
+# 00169 #
+# Use SHA-256 rather than implicitly using MD5 within the challenge handling
+# in multiprocessing.connection
+#
+# Sent upstream as http://bugs.python.org/issue17258
+# (rhbz#879695)
+Patch169: 00169-avoid-implicit-usage-of-md5-in-multiprocessing.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1098,6 +1106,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch166 -p1
 %patch167 -p1
 %patch168 -p1
+%patch169 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1928,6 +1937,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-23
+- use SHA-256 rather than implicitly using MD5 within the challenge handling
+in multiprocessing.connection (patch 169; rhbz#879695)
+
 * Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-22
 - fix a problem with distutils.sysconfig when CFLAGS is defined in the
 environment (patch 168; rhbz#849994)
