@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 21%{?dist}
+Release: 22%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -751,6 +751,18 @@ Patch166: 00166-fix-fake-repr-in-gdb-hooks.patch
 # Not yet sent upstream
 Patch167: 00167-disable-stack-navigation-tests-when-optimized-in-test_gdb.patch
 
+# 00168 #
+# Update distutils.sysconfig so that if CFLAGS is defined in the environment,
+# when building extension modules, it is appended to the full compilation
+# flags from Python's Makefile, rather than instead reducing the compilation
+# flags to the subset within OPT and adding it to those.
+#
+# In particular, this should ensure that "-fno-strict-aliasing" is used by
+# "python setup.py build" even when CFLAGS is defined in the environment.
+#
+# (rhbz#849994)
+Patch168: 00168-distutils-cflags.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1085,6 +1097,7 @@ done
 mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch166 -p1
 %patch167 -p1
+%patch168 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1915,6 +1928,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-22
+- fix a problem with distutils.sysconfig when CFLAGS is defined in the
+environment (patch 168; rhbz#849994)
+
 * Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-21
 - don't run any stack navigation tests in test_gdb for optimized builds
 (patch 167; rhbz#912025)
