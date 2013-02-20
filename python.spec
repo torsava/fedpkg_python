@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 19%{?dist}
+Release: 20%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1617,7 +1617,7 @@ rm -fr %{buildroot}
 %{dynload_dir}/cPickle.so
 %{dynload_dir}/cStringIO.so
 %{dynload_dir}/cmathmodule.so
-%{dynload_dir}/cryptmodule.so
+%{dynload_dir}/_cryptmodule.so
 %{dynload_dir}/datetime.so
 %{dynload_dir}/dbm.so
 %{dynload_dir}/dlmodule.so
@@ -1817,7 +1817,7 @@ rm -fr %{buildroot}
 %{dynload_dir}/cPickle_d.so
 %{dynload_dir}/cStringIO_d.so
 %{dynload_dir}/cmathmodule_d.so
-%{dynload_dir}/cryptmodule_d.so
+%{dynload_dir}/_cryptmodule_d.so
 %{dynload_dir}/datetime_d.so
 %{dynload_dir}/dbm_d.so
 %{dynload_dir}/dlmodule_d.so
@@ -1905,6 +1905,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-20
+- s/cryptmodule/_cryptmodule/ in package payload (rhbz#835021)
+
 * Tue Feb 19 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-19
 - bulletproof the gdb debugging hooks against a failure seen in ARM builds
 (patch 166; rhbz#912025)
