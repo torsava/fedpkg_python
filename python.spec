@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 20%{?dist}
+Release: 21%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -742,6 +742,15 @@ Patch165: 00165-crypt-module-salt-backport.patch
 # Not yet sent upstream
 Patch166: 00166-fix-fake-repr-in-gdb-hooks.patch
 
+# 00167 #
+# Don't run any of the stack navigation tests in test_gdb when Python is
+# optimized, since there appear to be many different ways in which gdb can
+# fail to read the PyFrameObject* for arbitrary places in the callstack,
+# presumably due to compiler optimization (rhbz#912025)
+#
+# Not yet sent upstream
+Patch167: 00167-disable-stack-navigation-tests-when-optimized-in-test_gdb.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1075,6 +1084,7 @@ done
 %patch165 -p1
 mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch166 -p1
+%patch167 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1905,6 +1915,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-21
+- don't run any stack navigation tests in test_gdb for optimized builds
+(patch 167; rhbz#912025)
+
 * Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-20
 - s/cryptmodule/_cryptmodule/ in package payload (rhbz#835021)
 
