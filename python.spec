@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 23%{?dist}
+Release: 24%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1709,6 +1709,7 @@ rm -fr %{buildroot}
 %dir %{pylibdir}/json
 %{pylibdir}/json/*.py*
 %{pylibdir}/lib2to3
+%exclude %{pylibdir}/lib2to3/tests
 %{pylibdir}/logging
 %{pylibdir}/multiprocessing
 %{pylibdir}/plat-linux2
@@ -1785,6 +1786,7 @@ rm -fr %{buildroot}
 %{pylibdir}/distutils/tests
 %{pylibdir}/email/test
 %{pylibdir}/json/tests
+%{pylibdir}/lib2to3/tests
 %{pylibdir}/sqlite3/test
 %{pylibdir}/test/*
 # These two are shipped in the main subpackage:
@@ -1937,6 +1939,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-24
+- move lib2to3/tests from python-libs to python-test (rhbz#850056)
+
 * Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-23
 - use SHA-256 rather than implicitly using MD5 within the challenge handling
 in multiprocessing.connection (patch 169; rhbz#879695)
