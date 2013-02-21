@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 26%{?dist}
+Release: 27%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -792,6 +792,20 @@ Patch170: 00170-gc-assertions.patch
 # (rhbz#907383; http://bugs.python.org/issue15340)
 Patch171: 00171-raise-correct-exception-when-dev-urandom-is-missing.patch
 
+# 00172 #
+# Port _multiprocessing.Connection.poll() to use the "poll" syscall, rather
+# than "select", allowing large numbers of subprocesses
+#
+# Based on this sequence of upstream patches to 2.7:
+#   http://hg.python.org/cpython/rev/c5c27b84d7af/
+#   http://hg.python.org/cpython/rev/7cf4ea64f603/
+#   http://hg.python.org/cpython/rev/da5e520a7ba5/
+#   http://hg.python.org/cpython/rev/f07435fa6736/
+#
+#(rhbz#849992; http://bugs.python.org/issue10527)
+Patch172: 00172-use-poll-for-multiprocessing-socket-connection.patch
+
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1130,6 +1144,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch169 -p1
 %patch170 -p1
 %patch171 -p1 -b .raise-correct-exception-when-dev-urandom-is-missing
+%patch172 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1962,6 +1977,11 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Feb 21 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-27
+- port _multiprocessing.Connection.poll() to use the "poll" syscall, rather
+than "select", allowing large numbers of subprocesses (patch 172;
+rhbz#849992)
+
 * Thu Feb 21 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-26
 - raise correct exception in os.urandom() when /dev/urandom is missing
 (patch 171; rhbz#907383)
