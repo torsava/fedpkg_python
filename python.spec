@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 25%{?dist}
+Release: 26%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -782,6 +782,16 @@ Patch169: 00169-avoid-implicit-usage-of-md5-in-multiprocessing.patch
 # (rhbz#850013)
 Patch170: 00170-gc-assertions.patch
 
+# 00171 #
+# Fix os.urandom() so that it raises NotImplementedError rather than OSError
+# if /dev/urandom can't be opened (e.g. in some chroots), given that callers
+# such as the random module have handler code expecting NotImplementedError
+# (regression introduced by hash randomization patch)
+#
+# Cherrypick of http://hg.python.org/cpython/rev/edbf37ace03c/ from upstream
+# (rhbz#907383; http://bugs.python.org/issue15340)
+Patch171: 00171-raise-correct-exception-when-dev-urandom-is-missing.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1119,6 +1129,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch168 -p1
 %patch169 -p1
 %patch170 -p1
+%patch171 -p1 -b .raise-correct-exception-when-dev-urandom-is-missing
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1951,6 +1962,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Feb 21 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-26
+- raise correct exception in os.urandom() when /dev/urandom is missing
+(patch 171; rhbz#907383)
+
 * Wed Feb 20 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-25
 - in debug builds, try to print repr() when a C-level assert fails in the
 garbage collector (typically indicating a reference-counting error somewhere
