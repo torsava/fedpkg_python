@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 29%{?dist}
+Release: 30%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1961,7 +1961,7 @@ rm -fr %{buildroot}
 # We put the debug-gdb.py file inside /usr/lib/debug to avoid noise from
 # ldconfig (rhbz:562980).
 # 
-# The /usr/lib/rpm/redhat/macros defines %__debug_package to use
+# The /usr/lib/rpm/redhat/macros defines the __debug_package macro to use
 # debugfiles.list, and it appears that everything below /usr/lib/debug and
 # (/usr/src/debug) gets added to this file (via LISTFILES) in
 # /usr/lib/rpm/find-debuginfo.sh
@@ -1977,6 +1977,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri Feb 22 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-30
+- remove __debug_package macro from comment
+
 * Fri Feb 22 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-29
 - drop -b from application of patch 157 (uid/gid overflows)
 
