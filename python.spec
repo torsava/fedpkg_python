@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 27%{?dist}
+Release: 28%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1977,6 +1977,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri Feb 22 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-28
+- fix bogus dates in changelog
+
 * Thu Feb 21 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-27
 - port _multiprocessing.Connection.poll() to use the "poll" syscall, rather
 than "select", allowing large numbers of subprocesses (patch 172;
@@ -2938,10 +2941,10 @@ directories (bug 531901)
 * Mon Jun 9 2003 Elliot Lee <sopwith@redhat.com> 2.2.3-3
 - rebuilt
 
-* Wed Jun  7 2003 Mihai Ibanescu <misa@redhat.com> 2.2.3-2
+* Sat Jun  7 2003 Mihai Ibanescu <misa@redhat.com> 2.2.3-2
 - Rebuilt
 
-* Tue Jun  6 2003 Mihai Ibanescu <misa@redhat.com> 2.2.3-1
+* Fri Jun  6 2003 Mihai Ibanescu <misa@redhat.com> 2.2.3-1
 - Upgraded to 2.2.3
 
 * Wed Apr  2 2003 Mihai Ibanescu <misa@redhat.com> 2.2.2-28
