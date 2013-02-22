@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 28%{?dist}
+Release: 29%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1128,7 +1128,7 @@ done
 # 00154: not for python 2
 %patch155 -p1
 %patch156 -p1
-%patch157 -p1 -b .uid-gid-overflows
+%patch157 -p1
 %patch158 -p1
 %patch159 -p1 -F 3
 # 00160: not for python 2
@@ -1977,6 +1977,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri Feb 22 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-29
+- drop -b from application of patch 157 (uid/gid overflows)
+
 * Fri Feb 22 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-28
 - fix bogus dates in changelog
 
