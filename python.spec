@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 30%{?dist}
+Release: 31%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1796,7 +1796,7 @@ rm -fr %{buildroot}
 %endif
 %{_bindir}/python%{pybasever}-config
 %{_libdir}/libpython%{pybasever}.so
-%config(noreplace) %{_sysconfdir}/rpm/macros.python2
+%{_sysconfdir}/rpm/macros.python2
 
 %files tools
 %defattr(-,root,root,755)
@@ -1977,6 +1977,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Mar  4 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-31
+- remove config flag from /etc/rpm/macros.python2
+
 * Fri Feb 22 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-30
 - remove __debug_package macro from comment
 
