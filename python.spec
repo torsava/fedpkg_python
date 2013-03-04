@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 31%{?dist}
+Release: 32%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -805,6 +805,11 @@ Patch171: 00171-raise-correct-exception-when-dev-urandom-is-missing.patch
 #(rhbz#849992; http://bugs.python.org/issue10527)
 Patch172: 00172-use-poll-for-multiprocessing-socket-connection.patch
 
+# 00173 #
+# Workaround for ENOPROTOOPT seen in Koji within
+# test.test_support.bind_port()
+# (rhbz#913732)
+Patch173: 00173-workaround-ENOPROTOOPT-in-bind_port.patch
 
 # (New patches go here ^^^)
 #
@@ -1145,6 +1150,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch170 -p1
 %patch171 -p1 -b .raise-correct-exception-when-dev-urandom-is-missing
 %patch172 -p1
+%patch173 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1977,6 +1983,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Mar  4 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-32
+- add workaround for ENOPROTOOPT seen running selftests in Koji
+(rhbz#913732)
+
 * Mon Mar  4 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-31
 - remove config flag from /etc/rpm/macros.python2
 
