@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 32%{?dist}
+Release: 33%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -811,6 +811,14 @@ Patch172: 00172-use-poll-for-multiprocessing-socket-connection.patch
 # (rhbz#913732)
 Patch173: 00173-workaround-ENOPROTOOPT-in-bind_port.patch
 
+# 00174 #
+# Workaround for failure to set up prefix/exec_prefix when running
+# an embededed libpython that sets Py_SetProgramName() to a name not
+# on $PATH when run from the root directory due to
+#   https://fedoraproject.org/wiki/Features/UsrMove
+# e.g. cmpi-bindings under systemd (rhbz#817554):
+Patch174: 00174-fix-for-usr-move.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1151,6 +1159,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch171 -p1 -b .raise-correct-exception-when-dev-urandom-is-missing
 %patch172 -p1
 %patch173 -p1
+%patch174 -p1 -b .fix-for-usr-move
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1983,6 +1992,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Mar  6 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-33
+- add workaround for cmpi-bindings issue (rhbz#817554)
+
 * Mon Mar  4 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-32
 - add workaround for ENOPROTOOPT seen running selftests in Koji
 (rhbz#913732)
