@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 33%{?dist}
+Release: 34%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1992,6 +1992,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Mar  6 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-34
+- restrict scope of workaround for cmpi-bindings issue to avoid breaking
+in-tree running of test_sys and test_subprocess (rhbz#817554)
+
 * Wed Mar  6 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-33
 - add workaround for cmpi-bindings issue (rhbz#817554)
 
