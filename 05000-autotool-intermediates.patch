@@ -1,6 +1,6 @@
 diff -up ./configure.autotool-intermediates ./configure
---- ./configure.autotool-intermediates	2012-04-11 18:35:27.009518662 -0400
-+++ ./configure	2012-04-11 18:35:27.852508123 -0400
+--- ./configure.autotool-intermediates	2013-03-25 15:25:30.438846538 -0400
++++ ./configure	2013-03-25 15:25:32.496846397 -0400
 @@ -1,7 +1,7 @@
  #! /bin/sh
  # From configure.in Revision.
@@ -668,6 +668,15 @@ diff -up ./configure.autotool-intermediates ./configure
    $as_echo_n "(cached) " >&6
  else
    ac_save_cc="$CC"
+@@ -5731,7 +5757,7 @@ then
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether gcc supports ParseTuple __format__" >&5
+ $as_echo_n "checking whether gcc supports ParseTuple __format__... " >&6; }
+   save_CFLAGS=$CFLAGS
+-  CFLAGS="$CFLAGS -Werror"
++  CFLAGS="$CFLAGS -Werror -Wformat"
+   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
 @@ -5770,7 +5796,7 @@ fi
  # options before we can check whether -Kpthread improves anything.
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether pthreads are available without options" >&5
@@ -1338,7 +1347,7 @@ diff -up ./configure.autotool-intermediates ./configure
    $as_echo "#define WITH_THREAD 1" >>confdefs.h
  
      posix_threads=yes
-@@ -8651,7 +8677,7 @@ if test "x$ac_cv_func_pthread_detach" = 
+@@ -8651,7 +8677,7 @@ if test "x$ac_cv_func_pthread_detach" =
  else
  
      ac_fn_c_check_header_mongrel "$LINENO" "atheos/threads.h" "ac_cv_header_atheos_threads_h" "$ac_includes_default"
@@ -2690,8 +2699,8 @@ diff -up ./configure.autotool-intermediates ./configure
    fi
   ;;
 diff -up ./pyconfig.h.in.autotool-intermediates ./pyconfig.h.in
---- ./pyconfig.h.in.autotool-intermediates	2012-04-11 18:35:27.002518749 -0400
-+++ ./pyconfig.h.in	2012-04-11 18:35:28.133504610 -0400
+--- ./pyconfig.h.in.autotool-intermediates	2013-03-25 15:25:30.435846538 -0400
++++ ./pyconfig.h.in	2013-03-25 15:25:33.030846360 -0400
 @@ -18,6 +18,12 @@
  /* Define this if you have BeOS threads. */
  #undef BEOS_THREADS

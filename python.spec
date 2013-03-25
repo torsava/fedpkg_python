@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.3
-Release: 34%{?dist}
+Release: 35%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -819,6 +819,16 @@ Patch173: 00173-workaround-ENOPROTOOPT-in-bind_port.patch
 # e.g. cmpi-bindings under systemd (rhbz#817554):
 Patch174: 00174-fix-for-usr-move.patch
 
+# 00175 #
+# Fix for configure.ac mistakenly detecting
+#   checking whether gcc supports ParseTuple __format__... yes
+# when it doesn't, when compiling with gcc 4.8
+#
+# Sent upstream as http://bugs.python.org/issue17547
+# (rhbz#927358)
+Patch175: 00175-fix-configure-Wformat.patch
+
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1160,6 +1170,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch172 -p1
 %patch173 -p1
 %patch174 -p1 -b .fix-for-usr-move
+%patch175 -p1 -b .fix-configure-Wformat
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1992,6 +2003,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Mar 25 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-35
+- fix gcc 4.8 incompatibility (rhbz#927358); regenerate autotool intermediates
+
 * Wed Mar  6 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-34
 - restrict scope of workaround for cmpi-bindings issue to avoid breaking
 in-tree running of test_sys and test_subprocess (rhbz#817554)
