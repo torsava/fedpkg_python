@@ -7,9 +7,9 @@ diff -up Python-2.7.3/Lib/test/test_gc.py.gc-assertions Python-2.7.3/Lib/test/te
 +from test.test_support import verbose, run_unittest, import_module
  import sys
 +import sysconfig
+ import time
  import gc
  import weakref
- 
 @@ -32,6 +33,8 @@ class GC_Detector(object):
          self.wr = weakref.ref(C1055820(666), it_happened)
  
