@@ -105,8 +105,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.3
-Release: 35%{?dist}
+Version: 2.7.4
+Release: 1%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -345,19 +345,8 @@ Patch54: python-2.6.4-setup-db48.patch
 # for 2.7rc1 by dmalcolm:
 Patch55: 00055-systemtap.patch
 
-# "lib64 patches"
-# This patch seems to be associated with bug 122304, which was
-#  http://sourceforge.net/tracker/?func=detail&atid=105470&aid=931848&group_id=5470
-# and is now
-#  http://bugs.python.org/issue931848
-# However, as it stands this patch is merely a copy of:
-#  http://svn.python.org/view/python/trunk/Lib/test/test_re.py?r1=35825&r2=35824&pathrev=35825
-# which is already upstream
-# Earlier versions of the patch (from the "dist-pkgs" CVS repo within RH)
-# contained additional changes that applied fixes to the internals of the regex
-# module, but these appear to have all been applied as part of 
-#  http://bugs.python.org/issue931848
-Patch101: 00101-lib64-regex.patch
+# Upstream as of Python 2.7.4
+#  Patch101: 00101-lib64-regex.patch
 
 # Only used when "%{_lib}" == "lib64"
 # Fixup various paths throughout the build and in distutils from "lib" to "lib64",
@@ -688,14 +677,8 @@ Patch156: 00156-gdb-autoload-safepath.patch
 # (rhbz#697470)
 Patch157: 00157-uid-gid-overflows.patch
 
-# 00158 #
-# This patch fixes a memory leak in _hashlib module, as reported in
-# RHBZ #836285; upstream report http://bugs.python.org/issue15219.
-# The patch has been accepted upstream, so this should be commented out
-# when packaging next upstream release.
-# The fix for Fedora specific "implement_specific_EVP_new()" function
-# has been merged into patch 00146.
-Patch158: 00158-fix-hashlib-leak.patch
+# Upstream as of Python 2.7.4
+# Patch158: 00158-fix-hashlib-leak.patch
 
 # 00159 #
 # From F18 on, there is a libdb4 package, that replaces db4. It places header
@@ -782,28 +765,11 @@ Patch169: 00169-avoid-implicit-usage-of-md5-in-multiprocessing.patch
 # (rhbz#850013)
 Patch170: 00170-gc-assertions.patch
 
-# 00171 #
-# Fix os.urandom() so that it raises NotImplementedError rather than OSError
-# if /dev/urandom can't be opened (e.g. in some chroots), given that callers
-# such as the random module have handler code expecting NotImplementedError
-# (regression introduced by hash randomization patch)
-#
-# Cherrypick of http://hg.python.org/cpython/rev/edbf37ace03c/ from upstream
-# (rhbz#907383; http://bugs.python.org/issue15340)
-Patch171: 00171-raise-correct-exception-when-dev-urandom-is-missing.patch
+# Upstream as of Python 2.7.4
+#  Patch171: 00171-raise-correct-exception-when-dev-urandom-is-missing.patch
 
-# 00172 #
-# Port _multiprocessing.Connection.poll() to use the "poll" syscall, rather
-# than "select", allowing large numbers of subprocesses
-#
-# Based on this sequence of upstream patches to 2.7:
-#   http://hg.python.org/cpython/rev/c5c27b84d7af/
-#   http://hg.python.org/cpython/rev/7cf4ea64f603/
-#   http://hg.python.org/cpython/rev/da5e520a7ba5/
-#   http://hg.python.org/cpython/rev/f07435fa6736/
-#
-#(rhbz#849992; http://bugs.python.org/issue10527)
-Patch172: 00172-use-poll-for-multiprocessing-socket-connection.patch
+# Upstream as of Python 2.7.4
+#  Patch172: 00172-use-poll-for-multiprocessing-socket-connection.patch
 
 # 00173 #
 # Workaround for ENOPROTOOPT seen in Koji within
@@ -1080,7 +1046,7 @@ done
 
 %patch54 -p1 -b .setup-db48
 
-%patch101 -p1 -b .lib64-regex
+# patch101: upstream as of Python 2.7.4
 %if "%{_lib}" == "lib64"
 %patch102 -p1 -b .lib64
 %patch103 -p1 -b .lib64-sysconfig
@@ -1152,7 +1118,7 @@ done
 %patch155 -p1
 %patch156 -p1
 %patch157 -p1
-%patch158 -p1
+# 00158: upstream as of Python 2.7.4
 %patch159 -p1 -F 3
 # 00160: not for python 2
 # 00161: not for python 2 yet
@@ -1166,8 +1132,8 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch168 -p1
 %patch169 -p1
 %patch170 -p1
-%patch171 -p1 -b .raise-correct-exception-when-dev-urandom-is-missing
-%patch172 -p1
+# 00171: upstream as of Python 2.7.4
+# 00171: upstream as of Python 2.7.4
 %patch173 -p1
 %patch174 -p1 -b .fix-for-usr-move
 %patch175 -p1 -b .fix-configure-Wformat
@@ -2003,6 +1969,19 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Apr 08 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.4-1
+- Updated to Python 2.7.4.
+- Refreshed patches: 0 (config), 7 (sqlite encoding), 16 (rpath in config),
+55 (systemtap), 111 (no static lib), 112 (debug build), 113 (more
+configuration flags), 130 (add extension to python config), 134 (fix
+COUNT_ALLOCS in test_sys), 146 (haslib FIPS), 147 (add debug malloc stats),
+153 (fix gdb test noise), 157 (uid, gid overflow - fixed upstream, just
+keeping few more downstream tests), 165 (crypt module salt backport),
+175 (fix configure Wformat), 5000 (regenerated autotooling patch)
+- Dropped patches: 101 (lib64 regex; merged upstream), 171 (exception on
+missing /dev/urandom; merged upstream), 172 (poll for multiprocessing socket
+connection; merged upstream)
+
 * Mon Mar 25 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.3-35
 - fix gcc 4.8 incompatibility (rhbz#927358); regenerate autotool intermediates
 
