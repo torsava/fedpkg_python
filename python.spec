@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -124,9 +124,6 @@ BuildRequires: autoconf
 BuildRequires: bluez-libs-devel
 BuildRequires: bzip2
 BuildRequires: bzip2-devel
-%if 0%{?fedora} && 0%{?fedora} < 18 || 0%{?rhel} && 0%{?rhel} < 7
-BuildRequires: db4-devel >= 4.8
-%endif
 
 # expat 2.1.0 added the symbol XML_SetHashSalt without bumping SONAME.  We use
 # it (in pyexpat) in order to enable the fix in Python-2.7.3 for CVE-2012-0876:
@@ -139,9 +136,7 @@ BuildRequires: gdbm-devel
 %endif
 BuildRequires: glibc-devel
 BuildRequires: gmp-devel
-%if 0%{?fedora} >= 18 || 0%{?rhel} >= 7
-BuildRequires: libdb4-devel
-%endif
+BuildRequires: libdb-devel
 BuildRequires: libffi-devel
 BuildRequires: libGL-devel
 BuildRequires: libX11-devel
@@ -333,9 +328,6 @@ Patch16: python-2.6-rpath.patch
 # Adapted from Patch0 in ivazquez' python3000 specfile, removing usage of
 # super() as it's an old-style class
 Patch17: python-2.6.4-distutils-rpath.patch
-
-# Patch setup.py so that it links against db-4.8:
-Patch54: python-2.6.4-setup-db48.patch
 
 # 00055 #
 # Systemtap support: add statically-defined probe points
@@ -679,13 +671,6 @@ Patch157: 00157-uid-gid-overflows.patch
 
 # Upstream as of Python 2.7.4
 # Patch158: 00158-fix-hashlib-leak.patch
-
-# 00159 #
-# From F18 on, there is a libdb4 package, that replaces db4. It places header
-# files in "/usr/include/libdb4", not in "/usr/include/db4", this patch
-# fixes this.
-# Downstream only modification.
-Patch159: 00159-correct-libdb-include-path.patch
 
 # 00160 #
 # python3.spec's
@@ -1044,8 +1029,6 @@ done
 # Try not disabling egg-infos, bz#414711
 #patch50 -p1 -b .egginfo
 
-%patch54 -p1 -b .setup-db48
-
 # patch101: upstream as of Python 2.7.4
 %if "%{_lib}" == "lib64"
 %patch102 -p1 -b .lib64
@@ -1119,7 +1102,6 @@ done
 %patch156 -p1
 %patch157 -p1
 # 00158: upstream as of Python 2.7.4
-%patch159 -p1 -F 3
 # 00160: not for python 2
 # 00161: not for python 2 yet
 # 00162: not for python 2 yet
@@ -1969,6 +1951,11 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Apr 11 2013 Kalev Lember <kalevlember@gmail.com> - 2.7.4-2
+- Build with libdb 5.3 instead of libdb4
+- Refreshed patches: 0 (config), 102 (lib64)
+- Dropped patches: 54 (db4 version), 159 (db4 include path adjustment)
+
 * Mon Apr 08 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.4-1
 - Updated to Python 2.7.4.
 - Refreshed patches: 0 (config), 7 (sqlite encoding), 16 (rpath in config),
