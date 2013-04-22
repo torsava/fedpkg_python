@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -779,6 +779,14 @@ Patch174: 00174-fix-for-usr-move.patch
 # (rhbz#927358)
 Patch175: 00175-fix-configure-Wformat.patch
 
+# 00176 #
+# Allow arbitrary timeout for Condition.wait, as reported in
+# https://bugzilla.redhat.com/show_bug.cgi?id=917709
+# Upstream doesn't want this: http://bugs.python.org/issue17748
+# But we have no better solution downstream yet, and since there is
+# no API breakage, we apply this patch.
+# Doesn't apply to Python 3, where this is fixed otherwise and works.
+Patch176: 00176-allow-arbitrary-timeout-in-condition-wait.patch
 
 # (New patches go here ^^^)
 #
@@ -1119,6 +1127,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch173 -p1
 %patch174 -p1 -b .fix-for-usr-move
 %patch175 -p1 -b .fix-configure-Wformat
+%patch176 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1951,6 +1960,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Apr 22 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.4-3
+- Allow arbitrary timeout in Condition.wait (rhbz#917709).
+
 * Thu Apr 11 2013 Kalev Lember <kalevlember@gmail.com> - 2.7.4-2
 - Build with libdb 5.3 instead of libdb4
 - Refreshed patches: 0 (config), 102 (lib64)
