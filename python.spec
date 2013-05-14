@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.4
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -195,6 +195,7 @@ Source5: pyfuntop.stp
 #  __python2, python2_sitelib, python2_sitearch, python2_version
 Source6: macros.python2
 
+Source7: pynche
 
 # Modules/Setup.dist is ultimately used by the "makesetup" script to construct
 # the Makefile and config.c
@@ -1394,13 +1395,10 @@ mv %{buildroot}/%{_mandir}/man1/python.1 %{buildroot}/%{_mandir}/man1/python%{py
 mkdir -p ${RPM_BUILD_ROOT}%{site_packages}
 
 #pynche
-cat > ${RPM_BUILD_ROOT}%{_bindir}/pynche << EOF
-#!/bin/bash
-exec %{site_packages}/pynche/pynche
-EOF
+install -p -m755 %{SOURCE7} ${RPM_BUILD_ROOT}%{_bindir}/pynche
 chmod 755 ${RPM_BUILD_ROOT}%{_bindir}/pynche
 rm -f Tools/pynche/*.pyw
-cp -r Tools/pynche \
+cp -rp Tools/pynche \
   ${RPM_BUILD_ROOT}%{site_packages}/
 
 mv Tools/pynche/README Tools/pynche/README.pynche
@@ -1967,6 +1965,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue May 14 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.4-5
+- fix multilib issue in python-tools due to /usr/bin/pynche (source 7;
+rhbz#831437)
+
 * Thu May 02 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.4-4
 - Add patch that enables building on ppc64p7.
 
