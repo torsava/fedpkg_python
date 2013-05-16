@@ -167,8 +167,8 @@ diff -up Python-2.7.3/setup.py.lib64 Python-2.7.3/setup.py
 -        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
 +        add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib64')
          add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
+         self.add_gcc_paths()
          self.add_multiarch_paths()
- 
 @@ -677,11 +677,11 @@ class PyBuildExt(build_ext):
              elif curses_library:
                  readline_libs.append(curses_library)

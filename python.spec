@@ -105,8 +105,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.4
-Release: 5%{?dist}
+Version: 2.7.5
+Release: 1%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -459,9 +459,8 @@ Patch114: 00114-statvfs-f_flag-constants.patch
 #   File "/home/david/rpmbuild/BUILDROOT/python-2.7-0.1.rc2.fc14.x86_64/usr/lib64/python2.7/struct.py", line 1, in <module>
 #    from _struct import *
 # ImportError: No module named _struct
-#
-# For now, revert this patch:
-Patch121: 00121-revert-r79310.patch
+# This patch adds the build Modules directory to build path.
+Patch121: 00121-add-Modules-to-build-path.patch
 
 # 00125 #
 # COUNT_ALLOCS is useful for debugging, but the upstream behaviour of always
@@ -471,13 +470,11 @@ Patch121: 00121-revert-r79310.patch
 # Not yet sent upstream
 Patch125: 00125-less-verbose-COUNT_ALLOCS.patch
 
-# Fix dbm module on big-endian 64-bit
-# Sent upstream as http://bugs.python.org/issue9687 (rhbz#626756)
-Patch126: fix-dbm_contains-on-64bit-bigendian.patch
+# Upstream as of Python 2.7.5
+#  Patch126: fix-dbm_contains-on-64bit-bigendian.patch
 
-# Fix test_structmember on big-endian 64-bit
-# Sent upstream as http://bugs.python.org/issue9960
-Patch127: fix-test_structmember-on-64bit-bigendian.patch
+# Upstream as of Python 2.7.5
+#  Patch127: fix-test_structmember-on-64bit-bigendian.patch
 
 # 2.7.1 (in r84230) added a test to test_abc which fails if python is
 # configured with COUNT_ALLOCS, which is the case for our debug build
@@ -772,27 +769,42 @@ Patch173: 00173-workaround-ENOPROTOOPT-in-bind_port.patch
 Patch174: 00174-fix-for-usr-move.patch
 
 # 00175 #
-# Fix for configure.ac mistakenly detecting
-#   checking whether gcc supports ParseTuple __format__... yes
-# when it doesn't, when compiling with gcc 4.8
-#
-# Sent upstream as http://bugs.python.org/issue17547
-# (rhbz#927358)
-Patch175: 00175-fix-configure-Wformat.patch
+# Upstream as of Python 2.7.5
+#  Patch175: 00175-fix-configure-Wformat.patch
 
 # 00176 #
+# python3.spec had:
+#  Patch176: 00176-upstream-issue16754-so-extension.patch
+# doesn't affect python2
+
+# 00177 #
+# python3.spec has
+#  Patch177: 00177-platform-unicode.patch
+# Does not affect python2
+
+# 00178 #
+# python3.spec has
+#  Patch178: 00178-dont-duplicate-flags-in-sysconfig.patch
+# Does not affect python2 AFAICS (different sysconfig values initialization)
+
+# 00179 #
+# python3.spec has
+#  Patch179: 00179-dont-raise-error-on-gdb-corrupted-frames-in-backtrace.patch
+# Doesn't seem to affect python2
+
+# 00180 #
+# Enable building on ppc64p7
+# Not appropriate for upstream, Fedora-specific naming
+Patch180: 00180-python-add-support-for-ppc64p7.patch
+
+# 00181 #
 # Allow arbitrary timeout for Condition.wait, as reported in
 # https://bugzilla.redhat.com/show_bug.cgi?id=917709
 # Upstream doesn't want this: http://bugs.python.org/issue17748
 # But we have no better solution downstream yet, and since there is
 # no API breakage, we apply this patch.
 # Doesn't apply to Python 3, where this is fixed otherwise and works.
-Patch176: 00176-allow-arbitrary-timeout-in-condition-wait.patch
-
-# 00177 #
-# Enable building on ppc64p7
-# Not appropriate for upstream, Fedora-specific naming
-Patch177: 00177-python-add-support-for-ppc64p7.patch
+Patch181: 00181-allow-arbitrary-timeout-in-condition-wait.patch
 
 
 # (New patches go here ^^^)
@@ -1074,8 +1086,8 @@ done
 
 %patch121 -p1
 %patch125 -p1 -b .less-verbose-COUNT_ALLOCS
-%patch126 -p0 -b .fix-dbm_contains-on-64bit-bigendian
-%patch127 -p1 -b .fix-test_structmember-on-64bit-bigendian
+# 00126: upstream as of Python 2.7.5
+# 00127: upstream as of Python 2.7.5
 %patch128 -p1
 
 %patch130 -p1
@@ -1133,9 +1145,13 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 # 00171: upstream as of Python 2.7.4
 %patch173 -p1
 %patch174 -p1 -b .fix-for-usr-move
-%patch175 -p1 -b .fix-configure-Wformat
-%patch176 -p1
-%patch177 -p1
+# 00175: upstream as of Python 2.7.5
+# 00176: not for python 2
+# 00177: not for python 2
+# 00178: not for python 2
+# 00179: not for python 2
+%patch180 -p1
+%patch181 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1965,6 +1981,14 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu May 16 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.5-1
+- Updated to Python 2.7.5.
+- Refreshed patches: 0 (config), 102 (lib64), 121 (add Modules to build path),
+153 (gdb test noise)
+- Dropped patches: 126, 127 (big endian issues, both fixed upstream),
+175 (configure -Wformat, fixed upstream)
+- Synced patch numbers with python3.spec.
+
 * Tue May 14 2013 David Malcolm <dmalcolm@redhat.com> - 2.7.4-5
 - fix multilib issue in python-tools due to /usr/bin/pynche (source 7;
 rhbz#831437)
