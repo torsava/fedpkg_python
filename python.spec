@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -850,6 +850,9 @@ Obsoletes: python-hashlib < 20081120
 Provides: python-hashlib = 20081120
 Obsoletes: python-uuid < 1.31
 Provides: python-uuid = 1.31
+# obsolete, not provide PyXML as proposed in feature
+# https://fedoraproject.org/wiki/Features/RemovePyXML#How_To_Test
+Obsoletes: PyXML <= 0.8.4-29
 
 # python-sqlite2-2.3.5-5.fc18 was retired.  Obsolete the old package here
 # so it gets uninstalled on updates
@@ -1981,6 +1984,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Jul 08 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.5-2
+- Obsolete PyXML as requested in rhbz#981137.
+
 * Thu May 16 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.5-1
 - Updated to Python 2.7.5.
 - Refreshed patches: 0 (config), 102 (lib64), 121 (add Modules to build path),
