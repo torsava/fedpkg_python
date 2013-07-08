@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -806,6 +806,22 @@ Patch180: 00180-python-add-support-for-ppc64p7.patch
 # Doesn't apply to Python 3, where this is fixed otherwise and works.
 Patch181: 00181-allow-arbitrary-timeout-in-condition-wait.patch
 
+# 00182 #
+# python3.spec had
+#  Patch182: 00182-fix-test_gdb-test_threads.patch
+
+# 00183 #
+# python3.spec has
+#  Patch183: 00183-cve-2013-2099-fix-ssl-match_hostname-dos.patch
+
+# 00184 #
+# Fix for https://bugzilla.redhat.com/show_bug.cgi?id=979696
+# Fixes build of ctypes against libffi with multilib wrapper
+# Python recognizes ffi.h only if it contains "#define LIBFFI_H",
+# but the wrapper doesn't contain that, which makes the build fail
+# We patch this by also accepting "#define ffi_wrapper_h"
+Patch184: 00184-ctypes-should-build-with-libffi-multilib-wrapper.patch
+
 
 # (New patches go here ^^^)
 #
@@ -1155,6 +1171,9 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 # 00179: not for python 2
 %patch180 -p1
 %patch181 -p1
+# 00182: not for python 2
+# 00183: not for python 2
+%patch184 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1984,6 +2003,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Jul 08 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.5-3
+- Fix build with libffi containing multilib wrapper for ffi.h (rhbz#979696).
+
 * Mon Jul 08 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.5-2
 - Obsolete PyXML as requested in rhbz#981137.
 
