@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.5
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -822,6 +822,12 @@ Patch181: 00181-allow-arbitrary-timeout-in-condition-wait.patch
 # We patch this by also accepting "#define ffi_wrapper_h"
 Patch184: 00184-ctypes-should-build-with-libffi-multilib-wrapper.patch
 
+# 00185 #
+# Fix for CVE-2013-4238 --
+# SSL module fails to handle NULL bytes inside subjectAltNames general names (CVE-2013-4238)
+# http://bugs.python.org/issue18709
+# rhbz#998430
+Patch185: 00185-CVE-2013-4238-hostname-check-bypass-in-SSL-module.patch
 
 # (New patches go here ^^^)
 #
@@ -1174,6 +1180,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 # 00182: not for python 2
 # 00183: not for python 2
 %patch184 -p1
+%patch185 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2003,6 +2010,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Aug 19 2013 Matej Stuchlik <mstuchli@redhat.com> - 2.7.5-5
+- Added fix for CVE-2013-4238 (rhbz#998430)
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.7.5-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
