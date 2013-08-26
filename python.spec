@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.5
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -823,11 +823,28 @@ Patch181: 00181-allow-arbitrary-timeout-in-condition-wait.patch
 Patch184: 00184-ctypes-should-build-with-libffi-multilib-wrapper.patch
 
 # 00185 #
+# Makes urllib2 honor "no_proxy" enviroment variable for "ftp:" URLs
+# when ftp_proxy is set
+Patch185: 00185-urllib2-honors-noproxy-for-ftp.patch
+
+# 00186 #
+# Fix memory leak of variable utf8 in marshal.c
+Patch186: 00186-memory-leak-marshalc.patch
+
+# 00187 #
+# Add an explicit RPATH to pyexpat.so pointing at the directory
+# containing the system expat (which has the extra XML_SetHashSalt
+# symbol), to avoid an ImportError with a link error if there's an
+# LD_LIBRARY_PATH containing a "vanilla" build of expat (without the
+# symbol)
+Patch187: 00187-add-RPATH-to-pyexpat.patch
+
+# 00188 #
 # Fix for CVE-2013-4238 --
-# SSL module fails to handle NULL bytes inside subjectAltNames general names (CVE-2013-4238)
+# SSL module fails to handle NULL bytes inside subjectAltNames general names
 # http://bugs.python.org/issue18709
 # rhbz#998430
-Patch185: 00185-CVE-2013-4238-hostname-check-bypass-in-SSL-module.patch
+Patch188: 00188-CVE-2013-4238-hostname-check-bypass-in-SSL-module.patch
 
 # (New patches go here ^^^)
 #
@@ -1181,6 +1198,9 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 # 00183: not for python 2
 %patch184 -p1
 %patch185 -p1
+%patch186 -p1
+%patch187 -p1
+%patch188 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2010,6 +2030,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Aug 26 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.5-6
+- Sync back/renumber patches to stay consistent with rhel.
+
 * Mon Aug 19 2013 Matej Stuchlik <mstuchli@redhat.com> - 2.7.5-5
 - Added fix for CVE-2013-4238 (rhbz#998430)
 
