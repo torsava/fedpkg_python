@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.5
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -852,6 +852,12 @@ Patch188: 00188-CVE-2013-4238-hostname-check-bypass-in-SSL-module.patch
 # rhbz#1008154 (patch by Attila Fazekas)
 Patch189: 00189-gdb-py-bt-dont-raise-exception-from-eval.patch
 
+# 00190 #
+#
+# Importing get_python_version in bdist_rpm
+# http://bugs.python.org/issue18045
+# rhbz#1029082
+Patch190: 00190-get_python_version.patch
 
 # (New patches go here ^^^)
 #
@@ -1203,6 +1209,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch187 -p1
 %patch188 -p1
 %patch189 -p1
+%patch190 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2032,6 +2039,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Nov 12 2013 Tomas Radej <tradej@redhat.com> - 2.7.5-9
+- Import get_python_version in bdist_rpm
+Resolves: rhbz#1029082
+
 * Tue Oct 08 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.5-8
 - Fix processing gdb py-bt command in eval calls.
 Resolves: rhbz#1008154
