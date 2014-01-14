@@ -45,7 +45,7 @@
 %global with_systemtap 1
 
 # some arches don't have valgrind so we need to disable its support on them
-%ifarch %{ix86} x86_64 ppc %{power64} s390x
+%ifarch %{arm} %{ix86} x86_64 ppc %{power64} s390x
 %global with_valgrind 1
 %else
 %global with_valgrind 0
@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.5
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2039,6 +2039,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Jan 14 2014 Dennis Gilmore <dennis@ausil.us> - 2.7.5-10
+- enable valgrind support on 32 bit arm
+
 * Tue Nov 12 2013 Tomas Radej <tradej@redhat.com> - 2.7.5-9
 - Import get_python_version in bdist_rpm
 Resolves: rhbz#1029082
