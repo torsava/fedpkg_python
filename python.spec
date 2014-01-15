@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.5
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1622,6 +1622,11 @@ sed \
 %endif # with_debug_build
 %endif # with_systemtap
 
+# Make library-files user writable
+/usr/bin/chmod 755 %{buildroot}%{dynload_dir}/*.so
+/usr/bin/chmod 755 %{buildroot}%{_libdir}/libpython%{pybasever}.so.1.0
+/usr/bin/chmod 755 %{buildroot}%{_libdir}/libpython%{pybasever}_d.so.1.0
+
 
 # ======================================================
 # Running the upstream test suite
@@ -2039,6 +2044,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Jan 15 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.7.5-11
+- Make library-files user writable to get rid of
+  Permission Denied in buildlog from debuginfo-packaging
+
 * Tue Jan 14 2014 Dennis Gilmore <dennis@ausil.us> - 2.7.5-10
 - enable valgrind support on 32 bit arm
 
