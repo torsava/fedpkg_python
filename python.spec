@@ -1149,7 +1149,7 @@ done
 %patch133 -p1
 %patch134 -p1
 %patch135 -p1
-%patch136 -p1
+%patch136 -p1 -b .stdin-test
 %patch137 -p1
 %patch138 -p1
 %ifarch %{arm}
