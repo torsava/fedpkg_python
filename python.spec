@@ -2033,6 +2033,8 @@ rm -fr %{buildroot}
 %changelog
 * Wed Jan 29 2014 Tomas Radej <tradej@redhat.com> - 2.7.6-1
 - Updated to v2.7.6
+- Freshened patches 102, 111, 112, 136, and 142
+- Dropped patches 186, 188 (both fixed upstream)
 
 * Wed Jan 15 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.7.5-11
 - Make library-files user writable to get rid of
