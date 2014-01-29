@@ -835,13 +835,6 @@ Patch185: 00185-urllib2-honors-noproxy-for-ftp.patch
 # symbol)
 Patch187: 00187-add-RPATH-to-pyexpat.patch
 
-# 00188 #
-# Fix for CVE-2013-4238 --
-# SSL module fails to handle NULL bytes inside subjectAltNames general names
-# http://bugs.python.org/issue18709
-# rhbz#998430
-Patch188: 00188-CVE-2013-4238-hostname-check-bypass-in-SSL-module.patch
-
 # 00189 #
 # Fixes gdb py-bt command not to raise exception while processing
 # statements from eval
@@ -1202,7 +1195,6 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch184 -p1
 %patch185 -p1
 %patch187 -p1
-%patch188 -p1
 %patch189 -p1
 %patch190 -p1
 
