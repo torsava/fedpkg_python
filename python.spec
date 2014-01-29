@@ -105,8 +105,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.5
-Release: 11%{?dist}
+Version: 2.7.6
+Release: 1%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2044,6 +2044,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Jan 29 2014 Tomas Radej <tradej@redhat.com> - 2.7.6-1
+- Updated to v2.7.6
+
 * Wed Jan 15 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.7.5-11
 - Make library-files user writable to get rid of
   Permission Denied in buildlog from debuginfo-packaging
