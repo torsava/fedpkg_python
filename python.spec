@@ -827,10 +827,6 @@ Patch184: 00184-ctypes-should-build-with-libffi-multilib-wrapper.patch
 # when ftp_proxy is set
 Patch185: 00185-urllib2-honors-noproxy-for-ftp.patch
 
-# 00186 #
-# Fix memory leak of variable utf8 in marshal.c
-Patch186: 00186-memory-leak-marshalc.patch
-
 # 00187 #
 # Add an explicit RPATH to pyexpat.so pointing at the directory
 # containing the system expat (which has the extra XML_SetHashSalt
@@ -1205,7 +1201,6 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 # 00183: not for python 2
 %patch184 -p1
 %patch185 -p1
-%patch186 -p1
 %patch187 -p1
 %patch188 -p1
 %patch189 -p1
