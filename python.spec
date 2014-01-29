@@ -1159,7 +1159,7 @@ done
 %patch140 -p1
 %endif
 %patch141 -p1
-%patch142 -p1
+%patch142 -p1 -b .tty-fail
 %patch143 -p1 -b .tsc-on-ppc
 %if !%{with_gdbm}
 %patch144 -p1
