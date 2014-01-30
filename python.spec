@@ -848,6 +848,11 @@ Patch189: 00189-gdb-py-bt-dont-raise-exception-from-eval.patch
 # rhbz#1029082
 Patch190: 00190-get_python_version.patch
 
+# 00191 #
+#
+# Disabling NOOP test as it fails without internet connection
+Patch191: 00191-disable-NOOP.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1197,6 +1202,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch187 -p1
 %patch189 -p1
 %patch190 -p1
+%patch191 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
