@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.6
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -853,6 +853,13 @@ Patch190: 00190-get_python_version.patch
 # Disabling NOOP test as it fails without internet connection
 Patch191: 00191-disable-NOOP.patch
 
+# 00192 #
+#
+# Fixing buffer overflow (upstream patch)
+# rhbz#1062375
+Patch192: 00192-buffer-overflow.patch
+
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1203,6 +1210,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch189 -p1
 %patch190 -p1
 %patch191 -p1
+%patch192 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2037,6 +2045,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Feb 10 2014 Tomas Radej <tradej@redhat.com> - 2.7.6-3
+- Fixed buffer overflow (upstream patch)
+Resolves: rhbz#1062375
+
 * Tue Feb 04 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.6-2
 - Install macros in _rpmconfigdir.
 
