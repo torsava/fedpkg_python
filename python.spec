@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.6
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -859,6 +859,14 @@ Patch191: 00191-disable-NOOP.patch
 # rhbz#1062375
 Patch192: 00192-buffer-overflow.patch
 
+# 00193 #
+#
+# Enable loading sqlite extensions. This patch isn't needed for
+# python3.spec, since Python 3 has a configuration option for this.
+# rhbz#1066708
+# Patch provided by John C. Peterson
+Patch193: 00193-enable-loading-sqlite-extensions.patch
+
 
 # (New patches go here ^^^)
 #
@@ -1211,6 +1219,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch190 -p1
 %patch191 -p1
 %patch192 -p1
+%patch193 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2045,6 +2054,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Feb 19 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.6-4
+- Enable loading sqlite extensions.
+Resolves: rhbz#1066708
+
 * Mon Feb 10 2014 Tomas Radej <tradej@redhat.com> - 2.7.6-3
 - Fixed buffer overflow (upstream patch)
 Resolves: rhbz#1062375
