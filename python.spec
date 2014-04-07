@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.6
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -867,6 +867,13 @@ Patch192: 00192-buffer-overflow.patch
 # Patch provided by John C. Peterson
 Patch193: 00193-enable-loading-sqlite-extensions.patch
 
+# 00194 #
+#
+# Fix tests with SQLite >= 3.8.4
+# http://bugs.python.org/issue20901
+# http://hg.python.org/cpython/raw-rev/1763e27a182d
+Patch194: 00194-fix-tests-with-sqlite-3.8.4.patch
+
 
 # (New patches go here ^^^)
 #
@@ -909,6 +916,8 @@ Obsoletes: python-ctypes < 1.0.1
 Provides: python-ctypes = 1.0.1
 Obsoletes: python-hashlib < 20081120
 Provides: python-hashlib = 20081120
+Obsoletes: python-unittest2 < 0.5.1-9
+Provides: python-unittest2 = 0.5.1-9
 Obsoletes: python-uuid < 1.31
 Provides: python-uuid = 1.31
 # obsolete, not provide PyXML as proposed in feature
@@ -1220,6 +1229,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch191 -p1
 %patch192 -p1
 %patch193 -p1
+%patch194 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2054,6 +2064,11 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Apr 07 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.6-5
+- Fix test failure with SQLite > 3.8.4.
+- Obsolete/Provide python-unittest2
+Related: rhbz#1060426
+
 * Wed Feb 19 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.6-4
 - Enable loading sqlite extensions.
 Resolves: rhbz#1066708
