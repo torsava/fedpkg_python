@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.6
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -910,6 +910,7 @@ Provides: Distutils
 Obsoletes: python2
 Provides: python2 = %{version}
 Obsoletes: python-elementtree <= 1.2.6
+Obsoletes: python-ordereddict <= 1.1-7
 Obsoletes: python-sqlite < 2.3.2
 Provides: python-sqlite = 2.3.2
 Obsoletes: python-ctypes < 1.0.1
@@ -2064,6 +2065,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Apr 14 2014 Tomas Radej <tradej@redhat.com> - 2.7.6-6
+- Obsoletes python-ordereddict (bz #1085593, not precisely 1:1 replacement)
+
 * Mon Apr 07 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 2.7.6-5
 - Fix test failure with SQLite > 3.8.4.
 - Obsolete/Provide python-unittest2
