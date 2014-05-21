@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.6
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2065,6 +2065,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed May 21 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 2.7.6-8
+- Rebuilt for https://fedoraproject.org/wiki/Changes/f21tcl86
+
 * Fri May 09 2014 Tomas Radej <tradej@redhat.com> - 2.7.6-7
 - Fixed obsoletes on ordereddict (bz #1095434)
 
