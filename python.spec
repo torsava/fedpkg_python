@@ -45,7 +45,7 @@
 %global with_systemtap 1
 
 # some arches don't have valgrind so we need to disable its support on them
-%ifarch %{arm} %{ix86} x86_64 ppc %{power64} s390x
+%ifarch %{arm} %{ix86} x86_64 ppc ppc64 ppc64p7 s390x
 %global with_valgrind 1
 %else
 %global with_valgrind 0
@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.6
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2065,6 +2065,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Jun 03 2014 Dan Horák <dan[at]danny.cz> - 2.7.6-9
+- update the arch list where valgrind exists - %%power64 includes also
+    ppc64le which is not supported yet
+
 * Wed May 21 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 2.7.6-8
 - Rebuilt for https://fedoraproject.org/wiki/Changes/f21tcl86
 
