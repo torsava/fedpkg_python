@@ -105,8 +105,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.6
-Release: 9%{?dist}
+Version: 2.7.7
+Release: 1%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -846,7 +846,8 @@ Patch189: 00189-gdb-py-bt-dont-raise-exception-from-eval.patch
 # Importing get_python_version in bdist_rpm
 # http://bugs.python.org/issue18045
 # rhbz#1029082
-Patch190: 00190-get_python_version.patch
+# FIXED UPSTREAM
+#Patch190: 00190-get_python_version.patch
 
 # 00191 #
 #
@@ -857,7 +858,8 @@ Patch191: 00191-disable-NOOP.patch
 #
 # Fixing buffer overflow (upstream patch)
 # rhbz#1062375
-Patch192: 00192-buffer-overflow.patch
+# FIXED UPSTREAM
+#Patch192: 00192-buffer-overflow.patch
 
 # 00193 #
 #
@@ -872,7 +874,8 @@ Patch193: 00193-enable-loading-sqlite-extensions.patch
 # Fix tests with SQLite >= 3.8.4
 # http://bugs.python.org/issue20901
 # http://hg.python.org/cpython/raw-rev/1763e27a182d
-Patch194: 00194-fix-tests-with-sqlite-3.8.4.patch
+# FIXED UPSTREAM
+#Patch194: 00194-fix-tests-with-sqlite-3.8.4.patch
 
 
 # (New patches go here ^^^)
@@ -1226,11 +1229,11 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch185 -p1
 %patch187 -p1
 %patch189 -p1
-%patch190 -p1
+# 00190: upstream as of Python 2.7.7
 %patch191 -p1
-%patch192 -p1
+# 00192: upstream as of Python 2.7.7
 %patch193 -p1
-%patch194 -p1
+# 00194: upstream as of Python 2.7.7
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2065,6 +2068,11 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Jun 04 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.7.7-1
+- Update to 2.7.7
+- Refreshed patches: #16, #112, #138, #147, #157, #166, #173, #5000
+- Dropped patches: #190, #192, #194
+
 * Tue Jun 03 2014 Dan Horák <dan[at]danny.cz> - 2.7.6-9
 - update the arch list where valgrind exists - %%power64 includes also
     ppc64le which is not supported yet
