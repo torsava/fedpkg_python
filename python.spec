@@ -45,7 +45,7 @@
 %global with_systemtap 1
 
 # some arches don't have valgrind so we need to disable its support on them
-%ifarch %{arm} %{ix86} x86_64 ppc ppc64 ppc64p7 s390x
+%ifnarch s390 ppc64le
 %global with_valgrind 1
 %else
 %global with_valgrind 0
@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2068,6 +2068,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Sat Jun  7 2014 Peter Robinson <pbrobinson@fedoraproject.org> 2.7.7-2
+- aarch64 has valgrind, just list those that don't support it
+
 * Wed Jun 04 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.7.7-1
 - Update to 2.7.7
 - Refreshed patches: #16, #112, #138, #147, #157, #166, #173, #5000
