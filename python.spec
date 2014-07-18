@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.8
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -877,6 +877,12 @@ Patch193: 00193-enable-loading-sqlite-extensions.patch
 # FIXED UPSTREAM
 #Patch194: 00194-fix-tests-with-sqlite-3.8.4.patch
 
+# Since openssl-1.0.1h-5.fc21 SSLv2 and SSLV3 protocols
+# are disabled by default in openssl, according the comment in openssl
+# patch this affects only SSLv23_method, this patch enables SSLv2
+# and SSLv3 when SSLv23_method is used
+Patch195: 00195-enable-sslv23-in-ssl.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1233,6 +1239,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 # 00192: upstream as of Python 2.7.7
 %patch193 -p1
 # 00194: upstream as of Python 2.7.7
+%patch195 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2067,6 +2074,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri Jul 18 2014 Robert Kuska <rkuska@redhat.com> - 2.7.8-2
+- Enable SSLv2 and SSLv3 when SSLv23_method is used in ssl
+
 * Mon Jul 14 2014 Robert Kuska <rkuska@redhat.com> - 2.7.8-1
 - Update to 2.7.8
 
