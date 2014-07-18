@@ -105,8 +105,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.7
-Release: 3%{?dist}
+Version: 2.7.8
+Release: 1%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -876,7 +876,6 @@ Patch193: 00193-enable-loading-sqlite-extensions.patch
 # http://hg.python.org/cpython/raw-rev/1763e27a182d
 # FIXED UPSTREAM
 #Patch194: 00194-fix-tests-with-sqlite-3.8.4.patch
-
 
 # (New patches go here ^^^)
 #
@@ -2068,6 +2067,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Jul 14 2014 Robert Kuska <rkuska@redhat.com> - 2.7.8-1
+- Update to 2.7.8
+
 * Fri Jul 11 2014 Dan Horák <dan[at]danny.cz> - 2.7.7-3
 - rebuilt for updated libffi ABI on ppc64le
 
