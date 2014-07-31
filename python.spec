@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.8
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1733,7 +1733,9 @@ rm -fr %{buildroot}
 
 %files
 %defattr(-, root, root, -)
-%doc LICENSE README
+%{!?_licensedir:%global license %%doc}
+%license LICENSE
+%doc README
 %{_bindir}/pydoc*
 %{_bindir}/%{python}
 %if %{main_python}
@@ -1744,7 +1746,9 @@ rm -fr %{buildroot}
 
 %files libs
 %defattr(-,root,root,-)
-%doc LICENSE README
+%{!?_licensedir:%global license %%doc}
+%license LICENSE
+%doc README
 %dir %{pylibdir}
 %dir %{dynload_dir}
 %{dynload_dir}/Python-%{version}-py%{pybasever}.egg-info
@@ -2074,6 +2078,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Jul 31 2014 Tom Callaway <spot@fedoraproject.org> - 2.7.8-3
+- fix license handling
+
 * Fri Jul 18 2014 Robert Kuska <rkuska@redhat.com> - 2.7.8-2
 - Enable SSLv2 and SSLv3 when SSLv23_method is used in ssl
 
