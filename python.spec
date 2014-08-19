@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.8
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -881,7 +881,18 @@ Patch193: 00193-enable-loading-sqlite-extensions.patch
 # are disabled by default in openssl, according the comment in openssl
 # patch this affects only SSLv23_method, this patch enables SSLv2
 # and SSLv3 when SSLv23_method is used
-Patch195: 00195-enable-sslv23-in-ssl.patch
+# Update:
+# Patch disabled, Openssl reverted disabling sslv3 and now
+# disables only sslv2 all tests pass
+#Patch195: 00195-enable-sslv23-in-ssl.patch
+
+# http://bugs.python.org/issue21308
+# Backport of ssl module from python3
+Patch196: 00196-ssl-backport.patch
+
+# http://bugs.python.org/issue22023
+# Patch seg fault in unicodeobject.c
+Patch197: 00197-unicode_fromformat.patch
 
 # (New patches go here ^^^)
 #
@@ -1239,7 +1250,9 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 # 00192: upstream as of Python 2.7.7
 %patch193 -p1
 # 00194: upstream as of Python 2.7.7
-%patch195 -p1
+#%patch195 -p1
+%patch196 -p1
+%patch197 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2078,6 +2091,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Aug 19 2014 Robert Kuska <rkuska@redhat.com> - 2.7.8-5
+- Backport ssl module from python3
+
 * Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.7.8-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
