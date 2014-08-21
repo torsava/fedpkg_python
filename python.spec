@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.8
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2091,6 +2091,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Aug 21 2014 Robert Kuska <rkuska@redhat.com> - 2.7.8-6
+- Update patch 196 (ssl backport)
+
 * Tue Aug 19 2014 Robert Kuska <rkuska@redhat.com> - 2.7.8-5
 - Backport ssl module from python3
 
