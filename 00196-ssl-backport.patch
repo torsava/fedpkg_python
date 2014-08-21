@@ -3785,7 +3785,7 @@ index 0000000..a312e28
 +        print("Listening on https://localhost:{0.port}".format(args))
 +    server.serve_forever(0.1)
 diff --git a/Lib/test/test_ssl.py b/Lib/test/test_ssl.py
-index 91b8029..54dbbd5 100644
+index 91b8029..a629e1b 100644
 --- a/Lib/test/test_ssl.py
 +++ b/Lib/test/test_ssl.py
 @@ -1,35 +1,78 @@
@@ -4029,7 +4029,7 @@ index 91b8029..54dbbd5 100644
              san = (('DNS', 'altnull.python.org\x00example.com'),
                     ('email', 'null@python.org\x00user@example.org'),
                     ('URI', 'http://null.python.org\x00http://example.org'),
-@@ -192,24 +279,7 @@ class BasicSocketTests(unittest.TestCase):
+@@ -196,24 +283,7 @@ class BasicSocketTests(unittest.TestCase):
          self.assertTrue(s.startswith("OpenSSL {:d}.{:d}.{:d}".format(major, minor, fix)),
                          (s, t))
  
@@ -5326,7 +5326,7 @@ index 91b8029..54dbbd5 100644
      class ThreadedEchoServer(threading.Thread):
  
          class ConnectionHandler(threading.Thread):
-@@ -457,48 +1529,45 @@ else:
+@@ -457,48 +1529,51 @@ else:
              with and without the SSL wrapper around the socket connection, so
              that we can test the STARTTLS functionality."""
  
@@ -5361,13 +5361,20 @@ index 91b8029..54dbbd5 100644
 -                                                   ca_certs=self.server.cacerts,
 -                                                   cert_reqs=self.server.certreqs,
 -                                                   ciphers=self.server.ciphers)
+-                except ssl.SSLError as e:
 +                    self.sslconn = self.server.context.wrap_socket(
 +                        self.sock, server_side=True)
 +                    self.server.selected_protocols.append(self.sslconn.selected_npn_protocol())
-                 except ssl.SSLError as e:
++                except socket.error as e:
++                    # We treat ConnectionResetError as though it were an
++                    # SSLError - OpenSSL on Ubuntu abruptly closes the
++                    # connection when asked to use an unsupported protocol.
++                    #
                      # XXX Various errors can have happened here, for example
                      # a mismatching protocol version, an invalid certificate,
                      # or a low-level bug. This should be made more discriminating.
++                    if not isinstance(e, ssl.SSLError) and e.errno != errno.ECONNRESET:
++                        raise
                      self.server.conn_errors.append(e)
                      if self.server.chatty:
 -                        handle_error("\n server:  bad connection attempt from " +
@@ -5394,7 +5401,7 @@ index 91b8029..54dbbd5 100644
                      return True
  
              def read(self):
-@@ -517,48 +1586,53 @@ else:
+@@ -517,48 +1592,53 @@ else:
                  if self.sslconn:
                      self.sslconn.close()
                  else:
@@ -5467,7 +5474,7 @@ index 91b8029..54dbbd5 100644
                              self.write(msg.lower())
                      except ssl.SSLError:
                          if self.server.chatty:
-@@ -569,36 +1643,34 @@ else:
+@@ -569,36 +1649,34 @@ else:
                          # harness, we want to stop the server
                          self.server.stop()
  
@@ -5524,7 +5531,7 @@ index 91b8029..54dbbd5 100644
              self.conn_errors = []
              threading.Thread.__init__(self)
              self.daemon = True
-@@ -626,10 +1698,10 @@ else:
+@@ -626,10 +1704,10 @@ else:
              while self.active:
                  try:
                      newconn, connaddr = self.sock.accept()
@@ -5538,7 +5545,7 @@ index 91b8029..54dbbd5 100644
                      handler.start()
                      handler.join()
                  except socket.timeout:
-@@ -648,11 +1720,12 @@ else:
+@@ -648,11 +1726,12 @@ else:
              class ConnectionHandler(asyncore.dispatcher_with_send):
  
                  def __init__(self, conn, certfile):
@@ -5552,7 +5559,7 @@ index 91b8029..54dbbd5 100644
  
                  def readable(self):
                      if isinstance(self.socket, ssl.SSLSocket):
-@@ -663,12 +1736,11 @@ else:
+@@ -663,12 +1742,11 @@ else:
                  def _do_ssl_handshake(self):
                      try:
                          self.socket.do_handshake()
@@ -5570,7 +5577,7 @@ index 91b8029..54dbbd5 100644
                          raise
                      except socket.error, err:
                          if err.args[0] == errno.ECONNABORTED:
-@@ -681,12 +1753,16 @@ else:
+@@ -681,12 +1759,16 @@ else:
                          self._do_ssl_handshake()
                      else:
                          data = self.recv(1024)
@@ -5589,7 +5596,7 @@ index 91b8029..54dbbd5 100644
                          sys.stdout.write(" server:  closed connection %s\n" % self.socket)
  
                  def handle_error(self):
-@@ -694,14 +1770,14 @@ else:
+@@ -694,14 +1776,14 @@ else:
  
              def __init__(self, certfile):
                  self.certfile = certfile
@@ -5608,7 +5615,7 @@ index 91b8029..54dbbd5 100644
                      sys.stdout.write(" server:  new connection from %s:%s\n" %addr)
                  self.ConnectionHandler(sock_obj, self.certfile)
  
-@@ -725,13 +1801,13 @@ else:
+@@ -725,13 +1807,13 @@ else:
              return self
  
          def __exit__(self, *args):
@@ -5625,7 +5632,7 @@ index 91b8029..54dbbd5 100644
                  sys.stdout.write(" cleanup: successfully joined.\n")
  
          def start(self, flag=None):
-@@ -743,103 +1819,15 @@ else:
+@@ -743,103 +1825,15 @@ else:
              if self.flag:
                  self.flag.set()
              while self.active:
@@ -5733,7 +5740,7 @@ index 91b8029..54dbbd5 100644
      def bad_cert_test(certfile):
          """
          Launch a server with CERT_REQUIRED, and check that trying to
-@@ -847,74 +1835,74 @@ else:
+@@ -847,74 +1841,74 @@ else:
          """
          server = ThreadedEchoServer(CERTFILE,
                                      certreqs=ssl.CERT_REQUIRED,
@@ -5863,7 +5870,7 @@ index 91b8029..54dbbd5 100644
          if certsreqs is None:
              certsreqs = ssl.CERT_NONE
          certtype = {
-@@ -922,19 +1910,30 @@ else:
+@@ -922,19 +1916,30 @@ else:
              ssl.CERT_OPTIONAL: "CERT_OPTIONAL",
              ssl.CERT_REQUIRED: "CERT_REQUIRED",
          }[certsreqs]
@@ -5901,7 +5908,7 @@ index 91b8029..54dbbd5 100644
          # Protocol mismatch can result in either an SSLError, or a
          # "Connection reset by peer" error.
          except ssl.SSLError:
-@@ -953,75 +1952,38 @@ else:
+@@ -953,75 +1958,38 @@ else:
  
      class ThreadedTests(unittest.TestCase):
  
@@ -5997,7 +6004,7 @@ index 91b8029..54dbbd5 100644
                      sys.stdout.write(pprint.pformat(cert) + '\n')
                      sys.stdout.write("Connection cipher is " + str(cipher) + '.\n')
                  if 'subject' not in cert:
-@@ -1032,8 +1994,94 @@ else:
+@@ -1032,8 +2000,94 @@ else:
                      self.fail(
                          "Missing or invalid 'organizationName' field in certificate subject; "
                          "should be 'Python Software Foundation'.")
@@ -6092,7 +6099,7 @@ index 91b8029..54dbbd5 100644
          def test_empty_cert(self):
              """Connecting with an empty cert file"""
              bad_cert_test(os.path.join(os.path.dirname(__file__) or os.curdir,
-@@ -1051,25 +2099,84 @@ else:
+@@ -1051,25 +2105,84 @@ else:
              bad_cert_test(os.path.join(os.path.dirname(__file__) or os.curdir,
                                         "badkey.pem"))
  
@@ -6181,7 +6188,7 @@ index 91b8029..54dbbd5 100644
              try_protocol_combo(ssl.PROTOCOL_SSLv23, ssl.PROTOCOL_SSLv3, True)
              try_protocol_combo(ssl.PROTOCOL_SSLv23, ssl.PROTOCOL_SSLv23, True)
              try_protocol_combo(ssl.PROTOCOL_SSLv23, ssl.PROTOCOL_TLSv1, True)
-@@ -1082,22 +2189,38 @@ else:
+@@ -1082,22 +2195,38 @@ else:
              try_protocol_combo(ssl.PROTOCOL_SSLv23, ssl.PROTOCOL_SSLv23, True, ssl.CERT_REQUIRED)
              try_protocol_combo(ssl.PROTOCOL_SSLv23, ssl.PROTOCOL_TLSv1, True, ssl.CERT_REQUIRED)
  
@@ -6222,7 +6229,7 @@ index 91b8029..54dbbd5 100644
                  sys.stdout.write("\n")
              try_protocol_combo(ssl.PROTOCOL_TLSv1, ssl.PROTOCOL_TLSv1, True)
              try_protocol_combo(ssl.PROTOCOL_TLSv1, ssl.PROTOCOL_TLSv1, True, ssl.CERT_OPTIONAL)
-@@ -1105,10 +2228,55 @@ else:
+@@ -1105,10 +2234,55 @@ else:
              if hasattr(ssl, 'PROTOCOL_SSLv2'):
                  try_protocol_combo(ssl.PROTOCOL_TLSv1, ssl.PROTOCOL_SSLv2, False)
              try_protocol_combo(ssl.PROTOCOL_TLSv1, ssl.PROTOCOL_SSLv3, False)
@@ -6279,7 +6286,7 @@ index 91b8029..54dbbd5 100644
  
              server = ThreadedEchoServer(CERTFILE,
                                          ssl_version=ssl.PROTOCOL_TLSv1,
-@@ -1120,119 +2288,109 @@ else:
+@@ -1120,119 +2294,109 @@ else:
                  s = socket.socket()
                  s.setblocking(1)
                  s.connect((HOST, server.port))
@@ -6448,7 +6455,7 @@ index 91b8029..54dbbd5 100644
                  sys.stdout.write("\n")
  
              server = ThreadedEchoServer(CERTFILE,
-@@ -1251,12 +2409,12 @@ else:
+@@ -1251,12 +2415,12 @@ else:
                  s.connect((HOST, server.port))
                  # helper methods for standardising recv* method signatures
                  def _recv_into():
@@ -6463,7 +6470,7 @@ index 91b8029..54dbbd5 100644
                      count, addr = s.recvfrom_into(b)
                      return b[:count]
  
-@@ -1275,73 +2433,73 @@ else:
+@@ -1275,73 +2439,73 @@ else:
                  data_prefix = u"PREFIX_"
  
                  for meth_name, send_meth, expect_success, args in send_methods:
@@ -6565,7 +6572,7 @@ index 91b8029..54dbbd5 100644
              started = threading.Event()
              finish = False
  
-@@ -1355,6 +2513,8 @@ else:
+@@ -1355,6 +2519,8 @@ else:
                          # Let the socket hang around rather than having
                          # it closed by garbage collection.
                          conns.append(server.accept()[0])
@@ -6574,7 +6581,7 @@ index 91b8029..54dbbd5 100644
  
              t = threading.Thread(target=serve)
              t.start()
-@@ -1372,8 +2532,8 @@ else:
+@@ -1372,8 +2538,8 @@ else:
                      c.close()
                  try:
                      c = socket.socket(socket.AF_INET)
@@ -6584,7 +6591,7 @@ index 91b8029..54dbbd5 100644
                      # Will attempt handshake and time out
                      self.assertRaisesRegexp(ssl.SSLError, "timed out",
                                              c.connect, (host, port))
-@@ -1384,59 +2544,384 @@ else:
+@@ -1384,59 +2550,384 @@ else:
                  t.join()
                  server.close()
  
@@ -7058,7 +7065,7 @@ index bcd83bf..80a0926 100644
  		test/subprocessdata \
  		test/tracedmodules \
 diff --git a/Modules/_ssl.c b/Modules/_ssl.c
-index 752b033..493eeea 100644
+index 752b033..8f4062b 100644
 --- a/Modules/_ssl.c
 +++ b/Modules/_ssl.c
 @@ -14,22 +14,28 @@
@@ -8827,7 +8834,7 @@ index 752b033..493eeea 100644
  static PyMethodDef PySSLMethods[] = {
      {"do_handshake", (PyCFunction)PySSL_SSLdo_handshake, METH_NOARGS},
      {"write", (PyCFunction)PySSL_SSLwrite, METH_VARARGS,
-@@ -1532,66 +1904,1345 @@ static PyMethodDef PySSLMethods[] = {
+@@ -1532,66 +1904,1343 @@ static PyMethodDef PySSLMethods[] = {
       PySSL_SSLread_doc},
      {"pending", (PyCFunction)PySSL_SSLpending, METH_NOARGS,
       PySSL_SSLpending_doc},
@@ -9439,8 +9446,6 @@ index 752b033..493eeea 100644
 +        keyfile_bytes ? keyfile_bytes : certfile_bytes,
 +        SSL_FILETYPE_PEM);
 +    PySSL_END_ALLOW_THREADS_S(pw_info.thread_state);
-+    Py_CLEAR(keyfile_bytes);
-+    Py_CLEAR(certfile_bytes);
 +    if (r != 1) {
 +        if (pw_info.error) {
 +            ERR_clear_error();
@@ -9471,8 +9476,8 @@ index 752b033..493eeea 100644
 +    SSL_CTX_set_default_passwd_cb(self->ctx, orig_passwd_cb);
 +    SSL_CTX_set_default_passwd_cb_userdata(self->ctx, orig_passwd_userdata);
 +    PyMem_Free(pw_info.password);
-+    Py_XDECREF(keyfile_bytes);
-+    Py_XDECREF(certfile_bytes);
++    PyMem_Free(keyfile_bytes);
++    PyMem_Free(certfile_bytes);
 +    return NULL;
 +}
 +
@@ -10206,7 +10211,7 @@ index 752b033..493eeea 100644
  }
  
  PyDoc_STRVAR(PySSL_RAND_status_doc,
-@@ -1630,21 +3281,413 @@ fails or if it does not provide enough data to seed PRNG.");
+@@ -1630,21 +3279,413 @@ fails or if it does not provide enough data to seed PRNG.");
  #endif /* HAVE_OPENSSL_RAND */
  
  
@@ -10623,7 +10628,7 @@ index 752b033..493eeea 100644
      {NULL,                  NULL}            /* Sentinel */
  };
  
-@@ -1672,16 +3715,17 @@ _ssl_thread_id_function (void) {
+@@ -1672,16 +3713,17 @@ _ssl_thread_id_function (void) {
  }
  #endif
  
@@ -10648,7 +10653,7 @@ index 752b033..493eeea 100644
  
         file and line are the file number of the function setting the
         lock. They can be useful for debugging.
-@@ -1705,10 +3749,11 @@ static int _setup_ssl_threads(void) {
+@@ -1705,10 +3747,11 @@ static int _setup_ssl_threads(void) {
      if (_ssl_locks == NULL) {
          _ssl_locks_count = CRYPTO_num_locks();
          _ssl_locks = (PyThread_type_lock *)
@@ -10662,7 +10667,7 @@ index 752b033..493eeea 100644
          for (i = 0;  i < _ssl_locks_count;  i++) {
              _ssl_locks[i] = PyThread_allocate_lock();
              if (_ssl_locks[i] == NULL) {
-@@ -1716,7 +3761,7 @@ static int _setup_ssl_threads(void) {
+@@ -1716,7 +3759,7 @@ static int _setup_ssl_threads(void) {
                  for (j = 0;  j < i;  j++) {
                      PyThread_free_lock(_ssl_locks[j]);
                  }
@@ -10671,7 +10676,7 @@ index 752b033..493eeea 100644
                  return 0;
              }
          }
-@@ -1736,14 +3781,39 @@ PyDoc_STRVAR(module_doc,
+@@ -1736,14 +3779,39 @@ PyDoc_STRVAR(module_doc,
  "Implementation module for SSL socket operations.  See the socket module\n\
  for documentation.");
  
@@ -10712,7 +10717,7 @@ index 752b033..493eeea 100644
  
      m = Py_InitModule3("_ssl", PySSL_methods, module_doc);
      if (m == NULL)
-@@ -1766,15 +3836,53 @@ init_ssl(void)
+@@ -1766,15 +3834,53 @@ init_ssl(void)
      OpenSSL_add_all_algorithms();
  
      /* Add symbols to module dict */
@@ -10772,7 +10777,7 @@ index 752b033..493eeea 100644
          return;
      PyModule_AddIntConstant(m, "SSL_ERROR_ZERO_RETURN",
                              PY_SSL_ERROR_ZERO_RETURN);
-@@ -1802,6 +3910,66 @@ init_ssl(void)
+@@ -1802,6 +3908,66 @@ init_ssl(void)
                              PY_SSL_CERT_OPTIONAL);
      PyModule_AddIntConstant(m, "CERT_REQUIRED",
                              PY_SSL_CERT_REQUIRED);
@@ -10839,7 +10844,7 @@ index 752b033..493eeea 100644
  
      /* protocol versions */
  #ifndef OPENSSL_NO_SSL2
-@@ -1814,6 +3982,109 @@ init_ssl(void)
+@@ -1814,6 +3980,109 @@ init_ssl(void)
                              PY_SSL_VERSION_SSL23);
      PyModule_AddIntConstant(m, "PROTOCOL_TLSv1",
                              PY_SSL_VERSION_TLS1);
@@ -10949,7 +10954,7 @@ index 752b033..493eeea 100644
  
      /* OpenSSL version */
      /* SSLeay() gives us the version of the library linked against,
-@@ -1825,15 +4096,7 @@ init_ssl(void)
+@@ -1825,15 +4094,7 @@ init_ssl(void)
          return;
      if (PyModule_AddObject(m, "OPENSSL_VERSION_NUMBER", r))
          return;
@@ -10966,7 +10971,7 @@ index 752b033..493eeea 100644
      r = Py_BuildValue("IIIII", major, minor, fix, patch, status);
      if (r == NULL || PyModule_AddObject(m, "OPENSSL_VERSION_INFO", r))
          return;
-@@ -1841,4 +4104,9 @@ init_ssl(void)
+@@ -1841,4 +4102,9 @@ init_ssl(void)
      if (r == NULL || PyModule_AddObject(m, "OPENSSL_VERSION", r))
          return;
  
@@ -12635,3 +12640,324 @@ index 0000000..81a8d7b
 +  #endif
 +    { NULL }
 +};
+diff --git a/Tools/ssl/make_ssl_data.py b/Tools/ssl/make_ssl_data.py
+new file mode 100755
+index 0000000..10244d1
+--- /dev/null
++++ b/Tools/ssl/make_ssl_data.py
+@@ -0,0 +1,68 @@
++#! /usr/bin/env python3
++
++"""
++This script should be called *manually* when we want to upgrade SSLError
++`library` and `reason` mnemnonics to a more recent OpenSSL version.
++
++It takes two arguments:
++- the path to the OpenSSL include files' directory
++  (e.g. openssl-1.0.1-beta3/include/openssl/)
++- the path to the C file to be generated
++  (probably Modules/_ssl_data.h)
++"""
++
++import datetime
++import os
++import re
++import sys
++
++
++def parse_error_codes(h_file, prefix):
++    pat = re.compile(r"#define\W+(%s([\w]+))\W+(\d+)\b" % re.escape(prefix))
++    codes = []
++    with open(h_file, "r", encoding="latin1") as f:
++        for line in f:
++            match = pat.search(line)
++            if match:
++                code, name, num = match.groups()
++                num = int(num)
++                codes.append((code, name, num))
++    return codes
++
++if __name__ == "__main__":
++    openssl_inc = sys.argv[1]
++    outfile = sys.argv[2]
++    use_stdout = outfile == '-'
++    f = sys.stdout if use_stdout else open(outfile, "w")
++    error_libraries = (
++        # (library code, mnemonic, error prefix, header file)
++        ('ERR_LIB_PEM', 'PEM', 'PEM_R_', 'pem.h'),
++        ('ERR_LIB_SSL', 'SSL', 'SSL_R_', 'ssl.h'),
++        ('ERR_LIB_X509', 'X509', 'X509_R_', 'x509.h'),
++        )
++    def w(l):
++        f.write(l + "\n")
++    w("/* File generated by Tools/ssl/make_ssl_data.py */")
++    w("/* Generated on %s */" % datetime.datetime.now().isoformat())
++    w("")
++
++    w("static struct py_ssl_library_code library_codes[] = {")
++    for libcode, mnemo, _, _ in error_libraries:
++        w('    {"%s", %s},' % (mnemo, libcode))
++    w('    { NULL }')
++    w('};')
++    w("")
++
++    w("static struct py_ssl_error_code error_codes[] = {")
++    for libcode, _, prefix, h_file in error_libraries:
++        codes = parse_error_codes(os.path.join(openssl_inc, h_file), prefix)
++        for code, name, num in sorted(codes):
++            w('  #ifdef %s' % (code))
++            w('    {"%s", %s, %s},' % (name, libcode, code))
++            w('  #else')
++            w('    {"%s", %s, %d},' % (name, libcode, num))
++            w('  #endif')
++    w('    { NULL }')
++    w('};')
++    if not use_stdout:
++        f.close()
+diff --git a/Tools/ssl/test_multiple_versions.py b/Tools/ssl/test_multiple_versions.py
+new file mode 100644
+index 0000000..fc7a967
+--- /dev/null
++++ b/Tools/ssl/test_multiple_versions.py
+@@ -0,0 +1,241 @@
++#./python
++"""Run Python tests with multiple installations of OpenSSL
++
++The script
++
++  (1) downloads OpenSSL tar bundle
++  (2) extracts it to ../openssl/src/openssl-VERSION/
++  (3) compiles OpenSSL
++  (4) installs OpenSSL into ../openssl/VERSION/
++  (5) forces a recompilation of Python modules using the
++      header and library files from ../openssl/VERSION/
++  (6) runs Python's test suite
++
++The script must be run with Python's build directory as current working
++directory:
++
++    ./python Tools/ssl/test_multiple_versions.py
++
++The script uses LD_RUN_PATH, LD_LIBRARY_PATH, CPPFLAGS and LDFLAGS to bend
++search paths for header files and shared libraries. It's known to work on
++Linux with GCC 4.x.
++
++(c) 2013 Christian Heimes <christian@python.org>
++"""
++import logging
++import os
++import tarfile
++import shutil
++import subprocess
++import sys
++from urllib import urlopen
++
++log = logging.getLogger("multissl")
++
++OPENSSL_VERSIONS = [
++    "0.9.7m", "0.9.8i", "0.9.8l", "0.9.8m", "0.9.8y", "1.0.0k", "1.0.1e"
++]
++FULL_TESTS = [
++    "test_asyncio", "test_ftplib", "test_hashlib", "test_httplib",
++    "test_imaplib", "test_nntplib", "test_poplib", "test_smtplib",
++    "test_smtpnet", "test_urllib2_localnet", "test_venv"
++]
++MINIMAL_TESTS = ["test_ssl", "test_hashlib"]
++CADEFAULT = True
++HERE = os.path.abspath(os.getcwd())
++DEST_DIR = os.path.abspath(os.path.join(HERE, os.pardir, "openssl"))
++
++
++class BuildSSL(object):
++    url_template = "https://www.openssl.org/source/openssl-{}.tar.gz"
++
++    module_files = ["Modules/_ssl.c",
++                    "Modules/socketmodule.c",
++                    "Modules/_hashopenssl.c"]
++
++    def __init__(self, version, openssl_compile_args=(), destdir=DEST_DIR):
++        self._check_python_builddir()
++        self.version = version
++        self.openssl_compile_args = openssl_compile_args
++        # installation directory
++        self.install_dir = os.path.join(destdir, version)
++        # source file
++        self.src_file = os.path.join(destdir, "src",
++                                     "openssl-{}.tar.gz".format(version))
++        # build directory (removed after install)
++        self.build_dir = os.path.join(destdir, "src",
++                                      "openssl-{}".format(version))
++
++    @property
++    def openssl_cli(self):
++        """openssl CLI binary"""
++        return os.path.join(self.install_dir, "bin", "openssl")
++
++    @property
++    def openssl_version(self):
++        """output of 'bin/openssl version'"""
++        env = os.environ.copy()
++        env["LD_LIBRARY_PATH"] = self.lib_dir
++        cmd = [self.openssl_cli, "version"]
++        return self._subprocess_output(cmd, env=env)
++
++    @property
++    def pyssl_version(self):
++        """Value of ssl.OPENSSL_VERSION"""
++        env = os.environ.copy()
++        env["LD_LIBRARY_PATH"] = self.lib_dir
++        cmd = ["./python", "-c", "import ssl; print(ssl.OPENSSL_VERSION)"]
++        return self._subprocess_output(cmd, env=env)
++
++    @property
++    def include_dir(self):
++        return os.path.join(self.install_dir, "include")
++
++    @property
++    def lib_dir(self):
++        return os.path.join(self.install_dir, "lib")
++
++    @property
++    def has_openssl(self):
++        return os.path.isfile(self.openssl_cli)
++
++    @property
++    def has_src(self):
++        return os.path.isfile(self.src_file)
++
++    def _subprocess_call(self, cmd, stdout=subprocess.DEVNULL, env=None,
++                         **kwargs):
++        log.debug("Call '{}'".format(" ".join(cmd)))
++        return subprocess.check_call(cmd, stdout=stdout, env=env, **kwargs)
++
++    def _subprocess_output(self, cmd, env=None, **kwargs):
++        log.debug("Call '{}'".format(" ".join(cmd)))
++        out = subprocess.check_output(cmd, env=env)
++        return out.strip().decode("utf-8")
++
++    def _check_python_builddir(self):
++        if not os.path.isfile("python") or not os.path.isfile("setup.py"):
++            raise ValueError("Script must be run in Python build directory")
++
++    def _download_openssl(self):
++        """Download OpenSSL source dist"""
++        src_dir = os.path.dirname(self.src_file)
++        if not os.path.isdir(src_dir):
++            os.makedirs(src_dir)
++        url = self.url_template.format(self.version)
++        log.info("Downloading OpenSSL from {}".format(url))
++        req = urlopen(url, cadefault=CADEFAULT)
++        # KISS, read all, write all
++        data = req.read()
++        log.info("Storing {}".format(self.src_file))
++        with open(self.src_file, "wb") as f:
++            f.write(data)
++
++    def _unpack_openssl(self):
++        """Unpack tar.gz bundle"""
++        # cleanup
++        if os.path.isdir(self.build_dir):
++            shutil.rmtree(self.build_dir)
++        os.makedirs(self.build_dir)
++
++        tf = tarfile.open(self.src_file)
++        base = "openssl-{}/".format(self.version)
++        # force extraction into build dir
++        members = tf.getmembers()
++        for member in members:
++            if not member.name.startswith(base):
++                raise ValueError(member.name)
++            member.name = member.name[len(base):]
++        log.info("Unpacking files to {}".format(self.build_dir))
++        tf.extractall(self.build_dir, members)
++
++    def _build_openssl(self):
++        """Now build openssl"""
++        log.info("Running build in {}".format(self.install_dir))
++        cwd = self.build_dir
++        cmd = ["./config", "shared", "--prefix={}".format(self.install_dir)]
++        cmd.extend(self.openssl_compile_args)
++        self._subprocess_call(cmd, cwd=cwd)
++        self._subprocess_call(["make"], cwd=cwd)
++
++    def _install_openssl(self, remove=True):
++        self._subprocess_call(["make", "install"], cwd=self.build_dir)
++        if remove:
++            shutil.rmtree(self.build_dir)
++
++    def install_openssl(self):
++        if not self.has_openssl:
++            if not self.has_src:
++                self._download_openssl()
++            else:
++                log.debug("Already has src {}".format(self.src_file))
++            self._unpack_openssl()
++            self._build_openssl()
++            self._install_openssl()
++        else:
++            log.info("Already has installation {}".format(self.install_dir))
++        # validate installation
++        version = self.openssl_version
++        if self.version not in version:
++            raise ValueError(version)
++
++    def touch_pymods(self):
++        # force a rebuild of all modules that use OpenSSL APIs
++        for fname in self.module_files:
++            os.utime(fname)
++
++    def recompile_pymods(self):
++        log.info("Using OpenSSL build from {}".format(self.build_dir))
++        # overwrite header and library search paths
++        env = os.environ.copy()
++        env["CPPFLAGS"] = "-I{}".format(self.include_dir)
++        env["LDFLAGS"] = "-L{}".format(self.lib_dir)
++        # set rpath
++        env["LD_RUN_PATH"] = self.lib_dir
++
++        log.info("Rebuilding Python modules")
++        self.touch_pymods()
++        cmd = ["./python", "setup.py", "build"]
++        self._subprocess_call(cmd, env=env)
++
++    def check_pyssl(self):
++        version = self.pyssl_version
++        if self.version not in version:
++            raise ValueError(version)
++
++    def run_pytests(self, *args):
++        cmd = ["./python", "-m", "test"]
++        cmd.extend(args)
++        self._subprocess_call(cmd, stdout=None)
++
++    def run_python_tests(self, *args):
++        self.recompile_pymods()
++        self.check_pyssl()
++        self.run_pytests(*args)
++
++
++def main(*args):
++    builders = []
++    for version in OPENSSL_VERSIONS:
++        if version in ("0.9.8i", "0.9.8l"):
++            openssl_compile_args = ("no-asm",)
++        else:
++            openssl_compile_args = ()
++        builder = BuildSSL(version, openssl_compile_args)
++        builder.install_openssl()
++        builders.append(builder)
++
++    for builder in builders:
++        builder.run_python_tests(*args)
++    # final touch
++    builder.touch_pymods()
++
++
++if __name__ == "__main__":
++    logging.basicConfig(level=logging.INFO,
++                        format="*** %(levelname)s %(message)s")
++    args = sys.argv[1:]
++    if not args:
++        args = ["-unetwork", "-v"]
++        args.extend(FULL_TESTS)
++    main(*args)
