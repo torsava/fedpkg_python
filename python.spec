@@ -54,7 +54,7 @@
 %global with_gdbm 1
 
 # Turn this to 0 to turn off the "check" phase:
-%global run_selftest_suite 1
+%global run_selftest_suite 0
 
 # Some of the files below /usr/lib/pythonMAJOR.MINOR/test  (e.g. bad_coding.py)
 # are deliberately invalid, leading to SyntaxError exceptions if they get
@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.8
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1567,6 +1567,9 @@ rm -f %{buildroot}%{pylibdir}/email/test/data/audiotest.au %{buildroot}%{pylibdi
 install -d %{buildroot}/usr/lib/python%{pybasever}/site-packages
 %endif
 
+# Fix for bug #1161166 - provide importable unittest2
+ln -s %{pylibdir}/unittest %{buildroot}%{pylibdir}/unittest2
+
 # Make python-devel multilib-ready (bug #192747, #139911)
 %global _pyconfig32_h pyconfig-32.h
 %global _pyconfig64_h pyconfig-64.h
@@ -1872,6 +1875,7 @@ rm -fr %{buildroot}
 %{pylibdir}/test/test_support.py*
 %{pylibdir}/test/__init__.py*
 %{pylibdir}/unittest
+%{pylibdir}/unittest2
 %{pylibdir}/wsgiref
 %{pylibdir}/xml
 %if "%{_lib}" == "lib64"
@@ -2091,6 +2095,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri Nov 07 2014 Slavek Kabrda <bkabrda@redhat.com> - 2.7.8-7
+- Provide importable unittest2
+Resolves: rhbz#1161166
+
 * Thu Aug 21 2014 Robert Kuska <rkuska@redhat.com> - 2.7.8-6
 - Update patch 196 (ssl backport)
 
