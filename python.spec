@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.8
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1567,9 +1567,6 @@ rm -f %{buildroot}%{pylibdir}/email/test/data/audiotest.au %{buildroot}%{pylibdi
 install -d %{buildroot}/usr/lib/python%{pybasever}/site-packages
 %endif
 
-# Fix for bug #1161166 - provide importable unittest2
-ln -s %{pylibdir}/unittest %{buildroot}%{pylibdir}/unittest2
-
 # Make python-devel multilib-ready (bug #192747, #139911)
 %global _pyconfig32_h pyconfig-32.h
 %global _pyconfig64_h pyconfig-64.h
@@ -1875,7 +1872,6 @@ rm -fr %{buildroot}
 %{pylibdir}/test/test_support.py*
 %{pylibdir}/test/__init__.py*
 %{pylibdir}/unittest
-%{pylibdir}/unittest2
 %{pylibdir}/wsgiref
 %{pylibdir}/xml
 %if "%{_lib}" == "lib64"
@@ -2095,6 +2091,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Nov 10 2014 Slavek Kabrda <bkabrda@redhat.com> - 2.7.8-8
+- Revert previous change, see rhbz#1161166#c6.
+
 * Fri Nov 07 2014 Slavek Kabrda <bkabrda@redhat.com> - 2.7.8-7
 - Provide importable unittest2
 Resolves: rhbz#1161166
