@@ -106,7 +106,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.8
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2091,6 +2091,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Nov 24 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.7.8-10
+- Improve python2_version macros
+
 * Thu Nov 13 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.7.8-9
 - Add python2_version_nodots macro
 
