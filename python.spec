@@ -907,6 +907,11 @@ Patch193: 00193-enable-loading-sqlite-extensions.patch
 Patch198: 00198-add-rewheel-module.patch
 %endif
 
+# OpenSSL disabled SSLv3 in SSLv23 method
+# This patch alters python tests to reflect this change
+# Issue: http://bugs.python.org/issue22638 Upstream discussion about SSLv3 in Python
+Patch199: 00199-alter-tests-to-reflect-sslv3-disabled.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1268,6 +1273,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 # 00197: upstream as of Python 2.7.9
 %if 0%{with_rewheel}
 %patch198 -p1
+%patch199 -p1
 %endif
 
 
@@ -2121,6 +2127,7 @@ rm -fr %{buildroot}
 - Update to 2.7.9
 - Refreshed patches: #55, #137, #146, #153, #156, #198
 - Dropped patches: #196, #197
+- New patch: #199
 - Added the rewheel module
 
 * Mon Nov 24 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.7.8-10
