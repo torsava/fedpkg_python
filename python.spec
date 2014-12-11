@@ -2,6 +2,8 @@
 # Conditionals and other variables controlling the build
 # ======================================================
 
+%global with_rewheel 1
+
 %{!?__python_ver:%global __python_ver EMPTY}
 #global __python_ver 27
 %global unicode ucs4
@@ -105,8 +107,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.8
-Release: 10%{?dist}
+Version: 2.7.9
+Release: 1%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -163,6 +165,11 @@ BuildRequires: valgrind-devel
 %endif
 
 BuildRequires: zlib-devel
+
+%if 0%{?with_rewheel}
+BuildRequires: python-setuptools
+BuildRequires: python-pip
+%endif
 
 
 
@@ -888,11 +895,17 @@ Patch193: 00193-enable-loading-sqlite-extensions.patch
 
 # http://bugs.python.org/issue21308
 # Backport of ssl module from python3
-Patch196: 00196-ssl-backport.patch
+# FIXED UPSTREAM
+# Patch196: 00196-ssl-backport.patch
 
 # http://bugs.python.org/issue22023
 # Patch seg fault in unicodeobject.c
-Patch197: 00197-unicode_fromformat.patch
+# FIXED UPSTREAM
+# Patch197: 00197-unicode_fromformat.patch
+
+%if 0%{with_rewheel}
+Patch198: 00198-add-rewheel-module.patch
+%endif
 
 # (New patches go here ^^^)
 #
@@ -1251,8 +1264,11 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch193 -p1
 # 00194: upstream as of Python 2.7.7
 #%patch195 -p1
-%patch196 -p1
-%patch197 -p1
+# 00196: upstream as of Python 2.7.9
+# 00197: upstream as of Python 2.7.9
+%if 0%{with_rewheel}
+%patch198 -p1
+%endif
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -1893,6 +1909,16 @@ rm -fr %{buildroot}
 %doc systemtap-example.stp pyfuntop.stp
 %endif
 
+%dir %{pylibdir}/ensurepip/
+%{pylibdir}/ensurepip/*.py*
+%exclude %{pylibdir}/ensurepip/_bundled
+
+%if 0%{?with_rewheel}
+%dir %{pylibdir}/ensurepip/rewheel/
+%{pylibdir}/ensurepip/rewheel/*.py*
+%endif
+
+
 %files devel
 %defattr(-,root,root,-)
 %{_libdir}/pkgconfig/python-%{pybasever}.pc
@@ -2091,6 +2117,12 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Dec 11 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.7.9-1
+- Update to 2.7.9
+- Refreshed patches: #55, #137, #146, #153, #156, #198
+- Dropped patches: #196, #197
+- Added the rewheel module
+
 * Mon Nov 24 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.7.8-10
 - Improve python2_version macros
 
