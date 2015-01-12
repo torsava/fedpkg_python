@@ -47,7 +47,7 @@
 %global with_systemtap 1
 
 # some arches don't have valgrind so we need to disable its support on them
-%ifnarch s390 ppc64le
+%ifnarch s390
 %global with_valgrind 1
 %else
 %global with_valgrind 0
@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.9
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1713,6 +1713,10 @@ CheckPython() {
 
   EXTRATESTOPTS="--verbose"
 
+%ifarch s390 s390x
+    EXTRATESTOPTS="$EXTRATESTOPTS -x test_gdb"
+%endif
+
 %if 0%{?with_huntrleaks}
   # Try to detect reference leaks on debug builds.  By default this means
   # running every test 10 times (6 to stabilize, then 4 to watch):
@@ -2123,6 +2127,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Jan 12 2015 Dan Horák <dan[at]danny.cz> - 2.7.9-2
+- build with valgrind on ppc64le
+- disable test_gdb on s390(x) until rhbz#1181034 is resolved
+
 * Thu Dec 11 2014 Matej Stuchlik <mstuchli@redhat.com> - 2.7.9-1
 - Update to 2.7.9
 - Refreshed patches: #55, #137, #146, #153, #156, #198
