@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.9
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1019,7 +1019,7 @@ Requires: pkgconfig
 Conflicts: %{python} < %{version}-%{release}
 %if %{main_python}
 Obsoletes: python2-devel
-Provides: python2-devel = %{version}-%{release}
+Provides: python2-devel%{?_isa} = %{version}-%{release}
 %endif
 
 %description devel
@@ -2127,6 +2127,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Jan 20 2015 Slavek Kabrda <bkabrda@redhat.com> - 2.7.9-3
+- Make python2-devel provide arch specific.
+Resolves: rhbz#1183530
+
 * Mon Jan 12 2015 Dan Horák <dan[at]danny.cz> - 2.7.9-2
 - build with valgrind on ppc64le
 - disable test_gdb on s390(x) until rhbz#1181034 is resolved
