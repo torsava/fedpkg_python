@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.9
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1019,6 +1019,7 @@ Requires: pkgconfig
 Conflicts: %{python} < %{version}-%{release}
 %if %{main_python}
 Obsoletes: python2-devel
+Provides: python2-devel = %{version}-%{release}
 Provides: python2-devel%{?_isa} = %{version}-%{release}
 %endif
 
@@ -2127,6 +2128,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Jan 20 2015 Slavek Kabrda <bkabrda@redhat.com> - 2.7.9-4
+- We need to provide both arch specific and noarch Provide for python2-devel
+in order not to break noarch builds.
+
 * Tue Jan 20 2015 Slavek Kabrda <bkabrda@redhat.com> - 2.7.9-3
 - Make python2-devel provide arch specific.
 Resolves: rhbz#1183530
