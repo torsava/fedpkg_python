@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.9
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1714,7 +1714,7 @@ CheckPython() {
 
   EXTRATESTOPTS="--verbose"
 
-%ifarch s390 s390x
+%ifarch s390 s390x %{power64}
     EXTRATESTOPTS="$EXTRATESTOPTS -x test_gdb"
 %endif
 
@@ -2128,6 +2128,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Fri Feb 06 2015 Karsten Hopp <karsten@redhat.com> 2.7.9-5
+- disable test_gdb on ppc64* until rhbz#1132488 is really resolved
+
 * Tue Jan 20 2015 Slavek Kabrda <bkabrda@redhat.com> - 2.7.9-4
 - We need to provide both arch specific and noarch Provide for python2-devel
 in order not to break noarch builds.
