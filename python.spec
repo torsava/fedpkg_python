@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.9
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1916,6 +1916,8 @@ rm -fr %{buildroot}
 
 %{_libdir}/%{py_INSTSONAME_optimized}
 %if 0%{?with_systemtap}
+%dir %(dirname %{tapsetdir})
+%dir %{tapsetdir}
 %{tapsetdir}/%{libpython_stp_optimized}
 %doc systemtap-example.stp pyfuntop.stp
 %endif
@@ -2079,6 +2081,8 @@ rm -fr %{buildroot}
 
 %{_libdir}/%{py_INSTSONAME_debug}
 %if 0%{?with_systemtap}
+%dir %(dirname %{tapsetdir})
+%dir %{tapsetdir}
 %{tapsetdir}/%{libpython_stp_debug}
 %endif
 
@@ -2128,6 +2132,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue Feb 17 2015 Ville Skyttä <ville.skytta@iki.fi> - 2.7.9-6
+- Own systemtap dirs (#710733)
+
 * Fri Feb 06 2015 Karsten Hopp <karsten@redhat.com> 2.7.9-5
 - disable test_gdb on ppc64* until rhbz#1132488 is really resolved
 
