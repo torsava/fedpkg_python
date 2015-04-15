@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.9
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -954,8 +954,6 @@ Obsoletes: python-ctypes < 1.0.1
 Provides: python-ctypes = 1.0.1
 Obsoletes: python-hashlib < 20081120
 Provides: python-hashlib = 20081120
-Obsoletes: python-unittest2 < 0.5.1-9
-Provides: python-unittest2 = 0.5.1-9
 Obsoletes: python-uuid < 1.31
 Provides: python-uuid = 1.31
 # obsolete, not provide PyXML as proposed in feature
@@ -2128,6 +2126,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Apr 15 2015 Robert Kuska <rkuska@redhat.com> - 2.7.9-6
+- Remove provides/obsolates for unittest2
+
 * Fri Feb 06 2015 Karsten Hopp <karsten@redhat.com> 2.7.9-5
 - disable test_gdb on ppc64* until rhbz#1132488 is really resolved
 
