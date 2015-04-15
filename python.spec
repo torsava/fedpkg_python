@@ -1715,7 +1715,7 @@ CheckPython() {
 
   EXTRATESTOPTS="--verbose"
 
-%ifarch s390 s390x %{power64}
+%ifarch s390 s390x %{power64} %{arm}
     EXTRATESTOPTS="$EXTRATESTOPTS -x test_gdb"
 %endif
 
@@ -2135,6 +2135,7 @@ rm -fr %{buildroot}
 %changelog
 * Wed Apr 15 2015 Robert Kuska <rkuska@redhat.com> - 2.7.9-10
 - Remove provides/obsolates for unittest2
+- Skip test_gdb on arm until rhbz#1196181 is resolved
 
 * Thu Mar 05 2015 Matej Stuchlik <mstuchli@redhat.com> - 2.7.9-9
 - Add proper rewheel Requires
