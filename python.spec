@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.9
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -957,8 +957,6 @@ Obsoletes: python-ctypes < 1.0.1
 Provides: python-ctypes = 1.0.1
 Obsoletes: python-hashlib < 20081120
 Provides: python-hashlib = 20081120
-Obsoletes: python-unittest2 < 0.5.1-9
-Provides: python-unittest2 = 0.5.1-9
 Obsoletes: python-uuid < 1.31
 Provides: python-uuid = 1.31
 # obsolete, not provide PyXML as proposed in feature
@@ -2135,6 +2133,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Apr 15 2015 Robert Kuska <rkuska@redhat.com> - 2.7.9-10
+- Remove provides/obsolates for unittest2
+
 * Thu Mar 05 2015 Matej Stuchlik <mstuchli@redhat.com> - 2.7.9-9
 - Add proper rewheel Requires
 
