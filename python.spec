@@ -1712,7 +1712,7 @@ CheckPython() {
 
   EXTRATESTOPTS="--verbose"
 
-%ifarch s390 s390x %{power64}
+%ifarch s390 s390x %{power64} %{arm}
     EXTRATESTOPTS="$EXTRATESTOPTS -x test_gdb"
 %endif
 
@@ -2128,6 +2128,7 @@ rm -fr %{buildroot}
 %changelog
 * Wed Apr 15 2015 Robert Kuska <rkuska@redhat.com> - 2.7.9-6
 - Remove provides/obsolates for unittest2
+- Disable test_gdb on arm until rhbz#1196181 is resolved
 
 * Fri Feb 06 2015 Karsten Hopp <karsten@redhat.com> 2.7.9-5
 - disable test_gdb on ppc64* until rhbz#1132488 is really resolved
