@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.9
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1715,7 +1715,7 @@ CheckPython() {
 
   EXTRATESTOPTS="--verbose"
 
-%ifarch s390 s390x %{power64} %{arm}
+%ifarch s390 s390x %{power64} %{arm} aarch64
     EXTRATESTOPTS="$EXTRATESTOPTS -x test_gdb"
 %endif
 
@@ -2133,6 +2133,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Tue May  5 2015 Peter Robinson <pbrobinson@fedoraproject.org> 2.7.9-11
+- Disable test_gdb on aarch64 (rhbz#1196181), it joins all other non x86 arches
+
 * Wed Apr 15 2015 Robert Kuska <rkuska@redhat.com> - 2.7.9-10
 - Remove provides/obsolates for unittest2
 - Skip test_gdb on arm until rhbz#1196181 is resolved
