@@ -107,8 +107,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.9
-Release: 11%{?dist}
+Version: 2.7.10
+Release: 1%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2133,6 +2133,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon May 25 2015 Matej Stuchlik <mstuchli@redhat.com> - 2.7.10-1
+- Update to 2.7.10
+
 * Tue May  5 2015 Peter Robinson <pbrobinson@fedoraproject.org> 2.7.9-11
 - Disable test_gdb on aarch64 (rhbz#1196181), it joins all other non x86 arches
 
