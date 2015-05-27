@@ -107,8 +107,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.9
-Release: 6%{?dist}
+Version: 2.7.10
+Release: 1%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -169,6 +169,9 @@ BuildRequires: zlib-devel
 %if 0%{?with_rewheel}
 BuildRequires: python-setuptools
 BuildRequires: python-pip
+
+Requires: python-setuptools
+Requires: python-pip
 %endif
 
 
@@ -1712,7 +1715,7 @@ CheckPython() {
 
   EXTRATESTOPTS="--verbose"
 
-%ifarch s390 s390x %{power64} %{arm}
+%ifarch s390 s390x %{power64} %{arm} aarch64
     EXTRATESTOPTS="$EXTRATESTOPTS -x test_gdb"
 %endif
 
@@ -1914,6 +1917,8 @@ rm -fr %{buildroot}
 
 %{_libdir}/%{py_INSTSONAME_optimized}
 %if 0%{?with_systemtap}
+%dir %(dirname %{tapsetdir})
+%dir %{tapsetdir}
 %{tapsetdir}/%{libpython_stp_optimized}
 %doc systemtap-example.stp pyfuntop.stp
 %endif
@@ -2077,6 +2082,8 @@ rm -fr %{buildroot}
 
 %{_libdir}/%{py_INSTSONAME_debug}
 %if 0%{?with_systemtap}
+%dir %(dirname %{tapsetdir})
+%dir %{tapsetdir}
 %{tapsetdir}/%{libpython_stp_debug}
 %endif
 
@@ -2126,6 +2133,11 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon May 25 2015 Matej Stuchlik <mstuchli@redhat.com> - 2.7.10-1
+- Update to 2.7.10
+- Own systemtap dirs (#710733)
+- Add proper rewheel Requires
+
 * Wed Apr 15 2015 Robert Kuska <rkuska@redhat.com> - 2.7.9-6
 - Remove provides/obsolates for unittest2
 - Disable test_gdb on arm until rhbz#1196181 is resolved
