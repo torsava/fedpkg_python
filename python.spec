@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.10
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1381,7 +1381,7 @@ if $PathFixWithThisBinary
 then
   LD_LIBRARY_PATH="$topdir/$ConfDir" ./$BinaryName \
     $topdir/Tools/scripts/pathfix.py \
-      -i "%{_bindir}/env $BinaryName" \
+      -i "/usr/bin/env $BinaryName" \
       $topdir
 fi
 
@@ -1502,7 +1502,7 @@ InstallPython optimized \
 # (which changes them by itself)
 # Make sure we preserve the file permissions
 for fixed in %{buildroot}%{_bindir}/pydoc; do
-    sed 's,#!.*/python$,#!%{_bindir}/env python%{pybasever},' $fixed > $fixed- \
+    sed 's,#!.*/python$,#!/usr/bin/env python%{pybasever},' $fixed > $fixed- \
         && cat $fixed- > $fixed && rm -f $fixed-
 done
 
@@ -1588,7 +1588,7 @@ rm -f %{buildroot}%{pylibdir}/email/test/data/audiotest.au %{buildroot}%{pylibdi
 
 # Fix bug #143667: python should own /usr/lib/python2.x on 64-bit machines
 %if "%{_lib}" == "lib64"
-install -d %{buildroot}/usr/lib/python%{pybasever}/site-packages
+install -d %{buildroot}/%{_prefix}/lib/python%{pybasever}/site-packages
 %endif
 
 # Make python-devel multilib-ready (bug #192747, #139911)
@@ -2133,6 +2133,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Jun 17 2015 Matej Stuchlik <mstuchli@redhat.com> - 2.7.10-2
+- Make relocating Python by changing _prefix actually work
+Resolves: rhbz#1231801
+
 * Mon May 25 2015 Matej Stuchlik <mstuchli@redhat.com> - 2.7.10-1
 - Update to 2.7.10
 
