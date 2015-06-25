@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.10
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -206,6 +206,10 @@ Source5: pyfuntop.stp
 Source6: macros.python2
 
 Source7: pynche
+
+# Supply version independent macros such as python_provide, py_build and
+# py_install
+Source8: macros.python
 
 # Modules/Setup.dist is ultimately used by the "makesetup" script to construct
 # the Makefile and config.c
@@ -1014,6 +1018,7 @@ a scripting language, and by the main "python" executable
 Summary: The libraries and header files needed for Python development
 Group: Development/Libraries
 Requires: %{python}%{?_isa} = %{version}-%{release}
+Requires: python-macros = %{version}-%{release}
 Requires: pkgconfig
 # Needed here because of the migration of Makefile from -devel to the main
 # package
@@ -1034,6 +1039,18 @@ Install python-devel if you want to develop Python extensions.  The
 python package will also need to be installed.  You'll probably also
 want to install the python-docs package, which contains Python
 documentation.
+
+%package -n python-macros
+Summary: The unversioned Python RPM macros
+Group: Development/Libraries
+Requires: %{python} = %{version}-%{release}
+
+%description -n python-macros
+This package contains the unversioned Python RPM macros, that most
+implementations should rely on.
+
+You should not need to install this package manually as the various
+python?-devel packages require it. So install a python-devel package instead.
 
 %package tools
 Summary: A collection of development tools included with Python
@@ -1638,6 +1655,7 @@ sed -i -e "s/'pyconfig.h'/'%{_pyconfig_h}'/" \
 # Install macros for rpm:
 mkdir -p %{buildroot}/%{_rpmconfigdir}/macros.d/
 install -m 644 %{SOURCE6} %{buildroot}/%{_rpmconfigdir}/macros.d/
+install -m 644 %{SOURCE8} %{buildroot}/%{_rpmconfigdir}/macros.d/
 
 # Ensure that the curses module was linked against libncursesw.so, rather than
 # libncurses.so (bug 539917)
@@ -1952,6 +1970,10 @@ rm -fr %{buildroot}
 %{_libdir}/libpython%{pybasever}.so
 %{_rpmconfigdir}/macros.d/macros.python2
 
+%files -n python-macros
+%defattr(-,root,root,-)
+%{_rpmconfigdir}/macros.d/macros.python
+
 %files tools
 %defattr(-,root,root,755)
 %doc Tools/pynche/README.pynche
@@ -2133,6 +2155,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Jun 25 2015 Thomas Spura <tomspur@fedoraproject.org> - 2.7.10-3
+- Add unversioned python macros from fpc#281 and fpc#534
+  and require it from python-devel
+
 * Wed Jun 17 2015 Matej Stuchlik <mstuchli@redhat.com> - 2.7.10-2
 - Make relocating Python by changing _prefix actually work
 Resolves: rhbz#1231801
