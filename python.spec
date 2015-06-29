@@ -1044,6 +1044,7 @@ documentation.
 Summary: The unversioned Python RPM macros
 Group: Development/Libraries
 Requires: %{python} = %{version}-%{release}
+BuildArch: noarch
 
 %description -n python-macros
 This package contains the unversioned Python RPM macros, that most
@@ -2156,8 +2157,9 @@ rm -fr %{buildroot}
 
 %changelog
 * Thu Jun 25 2015 Thomas Spura <tomspur@fedoraproject.org> - 2.7.10-3
-- Add unversioned python macros from fpc#281 and fpc#534
+- Add unversioned python-macros from fpc#281 and fpc#534
   and require it from python-devel
+- Make python-macros noarch
 
 * Wed Jun 17 2015 Matej Stuchlik <mstuchli@redhat.com> - 2.7.10-2
 - Make relocating Python by changing _prefix actually work
