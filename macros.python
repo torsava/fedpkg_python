@@ -18,6 +18,8 @@ CFLAGS="%{optflags}" %{__python} %{py_setup} %{?py_setup_args} install -O1 --ski
         if (string.starts(str, "python2-")) then\
                 print("Provides: python-");\
                 print(string.sub(str,9,string.len(str)));\
+                print(" = ");\
+                print(vr);\
         elseif (string.starts(str, "python3-")) then\
                 --No unversioned provides as python3 is not default\
         elseif (string.starts(str, "pypy-")) then\
@@ -28,11 +30,11 @@ CFLAGS="%{optflags}" %{__python} %{py_setup} %{?py_setup_args} install -O1 --ski
                 --Providing the current default python\
                 print("Provides: python2-");\
                 print(string.sub(str,9,string.len(str)));\
+                print(" = ");\
+                print(vr);\
         else\
                 print("ERROR: ");\
                 print(str);\
                 print("not recognized.");\
         end\
-        print(" = ");\
-        print(vr);\
 }

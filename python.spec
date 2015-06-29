@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.10
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2156,6 +2156,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Jun 29 2015 Thomas Spura <tomspur@fedoraproject.org> - 2.7.10-4
+- correct python_provide macro to include version only when emiting provides
+
 * Thu Jun 25 2015 Thomas Spura <tomspur@fedoraproject.org> - 2.7.10-3
 - Add unversioned python-macros from fpc#281 and fpc#534
   and require it from python-devel
