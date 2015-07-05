@@ -2164,10 +2164,6 @@ rm -fr %{buildroot}
   and require it from python-devel
 - Make python-macros noarch
 
-* Wed Jun 17 2015 Matej Stuchlik <mstuchli@redhat.com> - 2.7.10-2
-- Make relocating Python by changing _prefix actually work
-Resolves: rhbz#1231801
-
 * Mon May 25 2015 Matej Stuchlik <mstuchli@redhat.com> - 2.7.10-1
 - Update to 2.7.10
 - Own systemtap dirs (#710733)
