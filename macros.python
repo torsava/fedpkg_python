@@ -14,7 +14,7 @@ CFLAGS="%{optflags}" %{__python} %{py_setup} %{?py_setup_args} install -O1 --ski
                 return string.sub(String,1,string.len(Start))==Start\
         end\
         str = rpm.expand("%{?1:%{1}}");\
-        vr = rpm.expand("%{version}-%{release}")
+        vr = rpm.expand("%{?epoch:%{epoch}:}%{version}-%{release}")
         if (string.starts(str, "python2-")) then\
                 print("Provides: python-");\
                 print(string.sub(str,9,string.len(str)));\
