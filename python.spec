@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.10
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1043,7 +1043,6 @@ documentation.
 %package -n python-macros
 Summary: The unversioned Python RPM macros
 Group: Development/Libraries
-Requires: %{python} = %{version}-%{release}
 BuildArch: noarch
 
 %description -n python-macros
@@ -2156,6 +2155,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Jul 23 2015 Thomas Spura <tomspur@fedoraproject.org> - 2.7.10-6
+- python-macros: remove R on python (#1246036)
+
 * Wed Jul 22 2015 Thomas Spura <tomspur@fedoraproject.org> - 2.7.10-5
 - Include epoch in the python_provide macro fpc#534 (Slavek Kabrda)
 
