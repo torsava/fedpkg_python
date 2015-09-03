@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.10
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2155,6 +2155,10 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Sep 3 2015 Orion Poplawski <orion@cora.nwra.com> - 2.7.10-7
+- Add obsoletes to %%python_provide macro to fix upgrade path
+- Fix python2- provides for python- packages in %%python_provide
+
 * Thu Jul 23 2015 Thomas Spura <tomspur@fedoraproject.org> - 2.7.10-6
 - python-macros: remove R on python (#1246036)
 
