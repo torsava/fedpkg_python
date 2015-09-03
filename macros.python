@@ -21,7 +21,7 @@ CFLAGS="%{optflags}" %{__python} %{py_setup} %{?py_setup_args} install -O1 --ski
                 print(" = ");\
                 print(vr);\
                 --Obsoleting the previous default python package\
-                print("\nObsoletes: python-");\
+                print("\\nObsoletes: python-");\
                 print(string.sub(str,9,string.len(str)));\
                 print(" < ");\
                 print(vr);\
