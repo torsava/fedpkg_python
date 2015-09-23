@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.10
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1902,9 +1902,12 @@ rm -fr %{buildroot}
 %{pylibdir}/email/mime
 %{pylibdir}/encodings
 %{pylibdir}/hotshot
+%{pylibdir}/idlelib
 %{pylibdir}/importlib
 %dir %{pylibdir}/json
 %{pylibdir}/json/*.py*
+%{pylibdir}/lib2to3
+%exclude %{pylibdir}/lib2to3/tests
 %{pylibdir}/logging
 %{pylibdir}/multiprocessing
 %{pylibdir}/plat-linux2
@@ -1981,9 +1984,6 @@ rm -fr %{buildroot}
 %{_bindir}/pynche*
 %{_bindir}/pygettext*.py*
 %{_bindir}/msgfmt*.py*
-%{pylibdir}/idlelib
-%{pylibdir}/lib2to3
-%exclude %{pylibdir}/lib2to3/tests
 %{tools_dir}
 %{demo_dir}
 %{pylibdir}/Doc
@@ -2155,6 +2155,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Sep 23 2015 Robert Kuska <rkuska@redhat.com> - 2.7.10-10
+- Revert the moving modules to python-tools because distutils uses lib2to3
+
 * Tue Sep 22 2015 Robert Kuska <rkuska@redhat.com> - 2.7.10-9
 - Move idlelib and lib2to3 modules to pythont-tools
 
