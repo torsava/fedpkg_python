@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.10
-Release: 10%{?dist}
+Release: 11%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2155,6 +2155,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Oct 15 2015 Thomas Spura <tomspur@fedoraproject.org> - 2.7.10-11
+- provide/obsolete _isa packages in python_provide (#1271776)
+
 * Wed Sep 23 2015 Robert Kuska <rkuska@redhat.com> - 2.7.10-10
 - Revert the moving modules to python-tools because distutils uses lib2to3
 
