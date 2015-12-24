@@ -107,8 +107,8 @@
 Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
-Version: 2.7.10
-Release: 10%{?dist}
+Version: 2.7.11
+Release: 1%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -914,10 +914,10 @@ Patch193: 00193-enable-loading-sqlite-extensions.patch
 Patch198: 00198-add-rewheel-module.patch
 %endif
 
-# OpenSSL disabled SSLv3 in SSLv23 method
-# This patch alters python tests to reflect this change
-# Issue: http://bugs.python.org/issue22638 Upstream discussion about SSLv3 in Python
-Patch199: 00199-alter-tests-to-reflect-sslv3-disabled.patch
+# test_gdb.test_threads fails when run within rpmbuild
+# I couldnt reproduce the issue outside of rpmbuild, therefore
+# I skip test for now
+Patch200: 00200-skip-thread-test.patch
 
 # (New patches go here ^^^)
 #
@@ -1292,8 +1292,8 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 # 00197: upstream as of Python 2.7.9
 %if 0%{with_rewheel}
 %patch198 -p1
-%patch199 -p1
 %endif
+%patch200 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2155,6 +2155,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Mar 31 2016 Robert Kuska <rkuska@redhat.com> - 2.7.11-1
+- Update to 2.7.11
+
 * Wed Sep 23 2015 Robert Kuska <rkuska@redhat.com> - 2.7.10-10
 - Revert the moving modules to python-tools because distutils uses lib2to3
 
