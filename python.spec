@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.11
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -1018,7 +1018,7 @@ a scripting language, and by the main "python" executable
 Summary: The libraries and header files needed for Python development
 Group: Development/Libraries
 Requires: %{python}%{?_isa} = %{version}-%{release}
-Requires: python-macros = %{version}-%{release}
+Requires: python-macros
 Requires: pkgconfig
 # Needed here because of the migration of Makefile from -devel to the main
 # package
@@ -2155,6 +2155,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Mar 31 2016 Orion Poplawski <orion@cora.nwra.com> - 2.7.11-2
+- Get ready for separate python-macros package
+
 * Thu Mar 31 2016 Robert Kuska <rkuska@redhat.com> - 2.7.11-1
 - Update to 2.7.11
 
