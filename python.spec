@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.11
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -201,15 +201,7 @@ Source4: systemtap-example.stp
 # Written by dmalcolm; not yet sent upstream
 Source5: pyfuntop.stp
 
-# Supply various useful macros for building python 2 modules:
-#  __python2, python2_sitelib, python2_sitearch, python2_version
-Source6: macros.python2
-
 Source7: pynche
-
-# Supply version independent macros such as python_provide, py_build and
-# py_install
-Source8: macros.python
 
 # Modules/Setup.dist is ultimately used by the "makesetup" script to construct
 # the Makefile and config.c
@@ -1018,7 +1010,8 @@ a scripting language, and by the main "python" executable
 Summary: The libraries and header files needed for Python development
 Group: Development/Libraries
 Requires: %{python}%{?_isa} = %{version}-%{release}
-Requires: python-macros
+Requires: python-rpm-macros
+Requires: python2-rpm-macros
 Requires: pkgconfig
 # Needed here because of the migration of Makefile from -devel to the main
 # package
@@ -1039,18 +1032,6 @@ Install python-devel if you want to develop Python extensions.  The
 python package will also need to be installed.  You'll probably also
 want to install the python-docs package, which contains Python
 documentation.
-
-%package -n python-macros
-Summary: The unversioned Python RPM macros
-Group: Development/Libraries
-BuildArch: noarch
-
-%description -n python-macros
-This package contains the unversioned Python RPM macros, that most
-implementations should rely on.
-
-You should not need to install this package manually as the various
-python?-devel packages require it. So install a python-devel package instead.
 
 %package tools
 Summary: A collection of development tools included with Python
@@ -1652,11 +1633,6 @@ sed -i -e "s/'pyconfig.h'/'%{_pyconfig_h}'/" \
   %{buildroot}%{pylibdir}/distutils/sysconfig.py \
   %{buildroot}%{pylibdir}/sysconfig.py
 
-# Install macros for rpm:
-mkdir -p %{buildroot}/%{_rpmconfigdir}/macros.d/
-install -m 644 %{SOURCE6} %{buildroot}/%{_rpmconfigdir}/macros.d/
-install -m 644 %{SOURCE8} %{buildroot}/%{_rpmconfigdir}/macros.d/
-
 # Ensure that the curses module was linked against libncursesw.so, rather than
 # libncurses.so (bug 539917)
 ldd %{buildroot}/%{dynload_dir}/_curses*.so \
@@ -1968,11 +1944,6 @@ rm -fr %{buildroot}
 %endif
 %{_bindir}/python%{pybasever}-config
 %{_libdir}/libpython%{pybasever}.so
-%{_rpmconfigdir}/macros.d/macros.python2
-
-%files -n python-macros
-%defattr(-,root,root,-)
-%{_rpmconfigdir}/macros.d/macros.python
 
 %files tools
 %defattr(-,root,root,755)
@@ -2155,6 +2126,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Wed Jan 13 2016 Orion Poplawski <orion@cora.nwra.com> - 2.7.11-3
+- Drop macros, require python/python2-rpm-macros
+
 * Wed Dec 30 2015 Orion Poplawski <orion@cora.nwra.com> - 2.7.11-2
 - Get ready for separate python-macros package
 
