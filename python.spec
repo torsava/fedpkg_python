@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.11
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -2126,6 +2126,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2.7.11-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Wed Jan 13 2016 Orion Poplawski <orion@cora.nwra.com> - 2.7.11-3
 - Drop macros, require python/python2-rpm-macros
 
