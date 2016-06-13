@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.11
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -911,6 +911,12 @@ Patch198: 00198-add-rewheel-module.patch
 # I skip test for now
 Patch200: 00200-skip-thread-test.patch
 
+# https://bugs.python.org/issue26171
+# https://hg.python.org/cpython/rev/985fc64c60d6/
+# Fix possible integer overflow and heap corruption in zipimporter.get_data()
+# FIXED UPSTREAM
+Patch201: 00201-prevent-buffer-overflow-in-zipimport-module.patch
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1275,6 +1281,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch198 -p1
 %endif
 %patch200 -p1
+%patch201 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2126,6 +2133,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Jun 13 2016 Charalampos Stratakis <cstratak@redhat.com> - 2.7.11-4
+- Added patch for fixing possible integer overflow and heap corruption in zipimporter.get_data()
+
 * Thu Mar 31 2016 Orion Poplawski <orion@cora.nwra.com> - 2.7.11-3
 - Drop macros, require python/python2-rpm-macros
 
