@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.10
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -919,6 +919,13 @@ Patch198: 00198-add-rewheel-module.patch
 # Issue: http://bugs.python.org/issue22638 Upstream discussion about SSLv3 in Python
 Patch199: 00199-alter-tests-to-reflect-sslv3-disabled.patch
 
+# https://bugs.python.org/issue26171
+# https://hg.python.org/cpython/rev/985fc64c60d6/
+# Fix possible integer overflow and heap corruption in zipimporter.get_data()
+# FIXED UPSTREAM
+Patch201: 00201-prevent-buffer-overflow-in-zipimport-module.patch
+
+
 # (New patches go here ^^^)
 #
 # When adding new patches to "python" and "python3" in Fedora 17 onwards,
@@ -1294,6 +1301,8 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %patch198 -p1
 %patch199 -p1
 %endif
+
+%patch201 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2155,6 +2164,9 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Mon Jun 13 2016 Charalampos Stratakis <cstratak@redhat.com> - 2.7.10-9
+- Added patch for fixing possible integer overflow and heap corruption in zipimporter.get_data()
+
 * Thu Sep 3 2015 Orion Poplawski <orion@cora.nwra.com> - 2.7.10-8
 - Fix quoting in %%python_provide macro
 
