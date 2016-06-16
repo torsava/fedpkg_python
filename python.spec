@@ -108,7 +108,7 @@ Summary: An interpreted, interactive, object-oriented programming language
 Name: %{python}
 # Remember to also rebase python-docs when changing this:
 Version: 2.7.10
-Release: 9%{?dist}
+Release: 10%{?dist}
 License: Python
 Group: Development/Languages
 Requires: %{python}-libs%{?_isa} = %{version}-%{release}
@@ -925,6 +925,13 @@ Patch199: 00199-alter-tests-to-reflect-sslv3-disabled.patch
 # FIXED UPSTREAM
 Patch201: 00201-prevent-buffer-overflow-in-zipimport-module.patch
 
+# 00210 #
+# CVE-2016-0772 python: smtplib StartTLS stripping attack
+# rhbz#1303647: https://bugzilla.redhat.com/show_bug.cgi?id=1303647
+# rhbz#1346344: https://bugzilla.redhat.com/show_bug.cgi?id=1346344
+# FIXED UPSTREAM: https://hg.python.org/cpython/rev/b3ce713fb9be
+# Raise an error when STARTTLS fails
+Patch210: 00210-Raise-an-error-when-STARTTLS-fails.patch
 
 # (New patches go here ^^^)
 #
@@ -1303,6 +1310,7 @@ mv Modules/cryptmodule.c Modules/_cryptmodule.c
 %endif
 
 %patch201 -p1
+%patch210 -p1
 
 
 # This shouldn't be necesarry, but is right now (2.2a3)
@@ -2164,6 +2172,13 @@ rm -fr %{buildroot}
 # ======================================================
 
 %changelog
+* Thu Jun 16 2016 Tomas Orsava <torsava@redhat.com> - 2.7.10-10
+- Fix for: CVE-2016-0772 python: smtplib StartTLS stripping attack
+- Raise an error when STARTTLS fails
+- rhbz#1303647: https://bugzilla.redhat.com/show_bug.cgi?id=1303647
+- rhbz#1346344: https://bugzilla.redhat.com/show_bug.cgi?id=1346344
+- Fixed upstream: https://hg.python.org/cpython/rev/b3ce713fb9be
+
 * Mon Jun 13 2016 Charalampos Stratakis <cstratak@redhat.com> - 2.7.10-9
 - Added patch for fixing possible integer overflow and heap corruption in zipimporter.get_data()
 
